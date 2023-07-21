@@ -1,0 +1,37 @@
+{
+    "name": "alexgeno/phone-verification-laravel",
+    "description":"An extensible and configurable php library to verify a phone",
+
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "AlexGeno\\PhoneVerificationLaravel\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+              "AlexGeno\\PhoneVerificationLaravel\\PhoneVerificationServiceProvider"
+            ]
+        }
+    },
+    "authors": [
+        {
+            "name": "Alexey Geno",
+            "email": "alexeygeno@gmail.com",
+            "homepage":"https://github.com/alexeygeno"
+        }
+    ],
+    "require": {
+        "alexgeno/phone-verification": "^1.0"
+    },
+    "require-dev": {
+        "jenssegers/mongodb": "^3.8",
+        "predis/predis": "^2.1",
+        "laravel-notification-channels/messagebird": "^3.0",
+        "laravel-notification-channels/twilio": "^3.3",
+        "laravel/vonage-notification-channel": "^3.2",
+        "hotrush/laravel-log-notification-channel": "^0.4.0"
+    }
+}
