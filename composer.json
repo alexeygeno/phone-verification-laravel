@@ -9,11 +9,19 @@
             "AlexGeno\\PhoneVerificationLaravel\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "AlexGeno\\PhoneVerificationLaravel\\Tests\\": "tests/"
+        }
+    },
     "extra": {
         "laravel": {
             "providers": [
               "AlexGeno\\PhoneVerificationLaravel\\PhoneVerificationServiceProvider"
             ]
+        },
+        "aliases": {
+                "PhoneVerification": "AlexGeno\\PhoneVerificationLaravel\\Facades\\PhoneVerification"
         }
     },
     "authors": [
@@ -24,14 +32,19 @@
         }
     ],
     "require": {
+        "php":"^8.0",
         "alexgeno/phone-verification": "^1.0"
     },
     "require-dev": {
-        "jenssegers/mongodb": "^3.8",
-        "predis/predis": "^2.1",
-        "laravel-notification-channels/messagebird": "^3.0",
+        "jenssegers/mongodb": "^3.9",
+        "predis/predis": "^2.2",
+        "laravel-notification-channels/messagebird": "^4.0",
         "laravel-notification-channels/twilio": "^3.3",
         "laravel/vonage-notification-channel": "^3.2",
-        "hotrush/laravel-log-notification-channel": "^0.4.0"
+        "hotrush/laravel-log-notification-channel": "^0.4.0",
+        "php-mock/php-mock-phpunit": "^2.7",
+        "josiasmontag/laravel-redis-mock": "^1.3",
+        "orchestra/testbench": "^7.25",
+        "nunomaduro/collision": "^6.2"
     }
 }
