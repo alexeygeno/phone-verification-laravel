@@ -4,11 +4,11 @@ namespace AlexGeno\PhoneVerificationLaravel;
 
 class PhoneVerification{
 
-    public static bool $registerRoutes = true;
-    public static string $senderFactory = 'AlexGeno\\PhoneVerificationLaravel\\Factories\\Sender';
-    public static string $storageFactory = 'AlexGeno\\PhoneVerificationLaravel\\Factories\\Storage';
+    protected bool $routes = true;
+    protected string $senderFactory = 'AlexGeno\\PhoneVerificationLaravel\\Factories\\Sender';
+    protected string $storageFactory = 'AlexGeno\\PhoneVerificationLaravel\\Factories\\Storage';
 
-    public static function managerConfig():array {
+    public function managerConfig():array {
         $config = config('phone-verification.manager');
         // load translated messages
         $langPrefix = 'phone-verification::messages';
@@ -25,15 +25,30 @@ class PhoneVerification{
         return $config;
     }
 
-    public static function ignoreRoutes():void{
-        static::$registerRoutes = false;
+    public function useRoutes(bool $routes):self{
+        $this->routes = $routes;
+        return $this;
     }
 
-    public static function customSenderFactory(string $senderFactory):void{
-        static::$senderFactory = $senderFactory;
+    public function routes():bool{
+        return $this->routes;
     }
 
-    public static function customStorageFactory(string $storageFactory):void{
-        static::$storageFactory = $storageFactory;
+    public function useSenderFactory(string $class):self{
+        $this->senderFactory = $class;
+        return $this;
+    }
+
+    public function senderFactory():string{
+        return $this->senderFactory;
+    }
+
+    public function useStorageFactory(string $class):self{
+        $this->storageFactory = $class;
+        return $this;
+    }
+
+    public function storageFactory():string{
+        return $this->storageFactory;
     }
 }

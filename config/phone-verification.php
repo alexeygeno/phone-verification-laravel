@@ -1,14 +1,7 @@
 <?php
 return [
-    'storage' => env('PHONE_VERIFICATION_STORAGE'),
-    'sender' => env('PHONE_VERIFICATION_SENDER'),
-    //'manager' => env('PHONE_VERIFICATION_MANAGER')
-
-//    'twilio' => [
-//        'account_sid' => env('TWILIO_ACCOUNT_SID'),
-//        'auth_token' => env('TWILIO_AUTH_TOKEN'),
-//        'from' => env('TWILIO_FROM')
-//    ]
+    'storage' => env('PHONE_VERIFICATION_STORAGE', 'redis'),
+    'sender' => env('PHONE_VERIFICATION_SENDER', 'vonage'),
 
     'manager'   => [
         'rate_limits' => [

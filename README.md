@@ -64,7 +64,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         //...
-        PhoneVerification::customStorageFactory(\App\Factories\Storage::class);
+        (new PhoneVerification)->storageFactory(\App\Factories\Storage::class);
         //...
     }
 }
@@ -155,7 +155,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         //...
-        PhoneVerification::customSenderFactory(\App\Factories\Sender::class);
+        (new PhoneVerification)->storageFactory(\App\Factories\Sender::class);
         //...
     }
 }

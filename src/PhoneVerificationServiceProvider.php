@@ -19,36 +19,49 @@ class PhoneVerificationServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        $this->registerPhoneVerification();
         $this->registerStorage();
         $this->registerSender();
         $this->registerManager();
+        $this->registerConfig();
+    }
+
+    protected function registerPhoneVerification(){
+        $this->app->singleton(PhoneVerification::class, function() {
+            return new PhoneVerification();
+        });
     }
 
     protected function registerStorage():void{
         $this->app->bind(\AlexGeno\PhoneVerification\Storage\I::class, function() {
             $storage =  config('phone-verification.storage');
-            $storageFactory = new PhoneVerification::$storageFactory;
-            return $storageFactory->{$storage}();
+            $storageFactory = $this->app->make(PhoneVerification::class)->storageFactory();
+            return (new $storageFactory)->{$storage}();
         });
     }
 
     protected function registerSender():void{
         $this->app->bind(ISender::class, function() {
             $sender =  config('phone-verification.sender');
-            $senderFactory = new PhoneVerification::$senderFactory;
-            return $senderFactory->{$sender}();
+            $senderFactory = $this->app->make(PhoneVerification::class)->senderFactory();
+            return (new $senderFactory)->{$sender}();
         });
     }
 
     protected function registerManager():void{
 
         $this->app->bind(Initiator::class, function($container) {
-            return (new Manager($container->make(IStorage::class), PhoneVerification::managerConfig()))
+            return (new Manager($container->make(IStorage::class), $this->app->make(PhoneVerification::class)->managerConfig()))
                 ->sender($container->make(ISender::class));
         });
         $this->app->bind(Completer::class, function($container) {
-            return (new Manager($container->make(IStorage::class), PhoneVerification::managerConfig()));
+            return (new Manager($container->make(IStorage::class), $this->app->make(PhoneVerification::class)->managerConfig()));
         });
+    }
+
+    protected function registerConfig():void
+    {
+        $this->mergeConfigFrom(__DIR__.'/../config/phone-verification.php', 'phone-verification');
     }
 
     /**
@@ -57,7 +70,6 @@ class PhoneVerificationServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->bootRoutes();
-        $this->bootConfig();
         $this->bootLang();
         $this->bootPublishing();
     }
@@ -73,17 +85,12 @@ class PhoneVerificationServiceProvider extends ServiceProvider
         }
     }
 
-    protected function bootConfig():void
-    {
-        $this->mergeConfigFrom(__DIR__.'/../config/phone-verification.php', 'phone-verification');
-    }
-
     protected function bootRoutes(){
-        if(PhoneVerification::$registerRoutes) {
+        if($this->app->make(PhoneVerification::class)->routes()) {
             $this->loadRoutesFrom(__DIR__ . '/../routes/api.php');
         }
     }
     protected function bootLang(){
-        $this->loadTranslationsFrom(__DIR__.'/../lang','phone-verification');
+        $this->loadTranslationsFrom(__DIR__.'/../resources/lang','phone-verification');
     }
 }
