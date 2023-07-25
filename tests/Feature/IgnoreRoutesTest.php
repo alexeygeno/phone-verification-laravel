@@ -2,8 +2,7 @@
 
 namespace AlexGeno\PhoneVerificationLaravel\Tests\Feature;
 
-
-use AlexGeno\PhoneVerificationLaravel\PhoneVerification;
+use PhoneVerification;
 
 class IgnoreRoutesTest extends FeatureTestCase
 {
@@ -11,8 +10,7 @@ class IgnoreRoutesTest extends FeatureTestCase
     protected function getEnvironmentSetUp($app):void
     {
         parent::getEnvironmentSetUp($app);
-        $package = $app->make(PhoneVerification::class);
-        $package->useRoutes(false);
+        PhoneVerification::useRoutes(false);
     }
 
     public function test_initiate_not_available()

@@ -18,10 +18,10 @@
         "laravel": {
             "providers": [
               "AlexGeno\\PhoneVerificationLaravel\\PhoneVerificationServiceProvider"
-            ]
-        },
-        "aliases": {
+            ],
+            "aliases": {
                 "PhoneVerification": "AlexGeno\\PhoneVerificationLaravel\\Facades\\PhoneVerification"
+            }
         }
     },
     "authors": [

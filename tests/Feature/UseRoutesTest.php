@@ -4,7 +4,7 @@ namespace AlexGeno\PhoneVerificationLaravel\Tests\Feature;
 use phpmock\phpunit\PHPMock;
 
 
-class PhoneVerificationTest extends FeatureTestCase
+class UseRoutesTest extends FeatureTestCase
 {
     use PHPMock;
 
@@ -27,7 +27,7 @@ class PhoneVerificationTest extends FeatureTestCase
 
     public function test_initiation_rate_limit_exceeded()
     {
-        config()->set('phone-verification.manager.rate_limits.initiate', ['count' => 0, 'period_secs' => 3600]);
+        $this->app->config->set('phone-verification.manager.rate_limits.initiate', ['count' => 0, 'period_secs' => 3600]);
         $response = $this->postJson('/phone-verification/initiate', ['to' =>'+380935258272']);
 
         $response->assertStatus(406);
@@ -62,7 +62,8 @@ class PhoneVerificationTest extends FeatureTestCase
 
     public function test_completion_rate_limit_exceeded()
     {
-        config()->set('phone-verification.manager.rate_limits.complete', ['count' => 0, 'period_secs' => 60]);
+
+        $this->app->config->set('phone-verification.manager.rate_limits.complete', ['count' => 0, 'period_secs' => 60]);
         $response = $this->postJson('/phone-verification/complete', ['to' =>'+380935258272', 'otp' => 0]);
 
         $response->assertStatus(406);
