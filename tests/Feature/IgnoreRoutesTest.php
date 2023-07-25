@@ -2,7 +2,7 @@
 
 namespace AlexGeno\PhoneVerificationLaravel\Tests\Feature;
 
-use PhoneVerification;
+use AlexGeno\PhoneVerificationLaravel\Facades\PhoneVerification;
 
 class IgnoreRoutesTest extends FeatureTestCase
 {
@@ -13,13 +13,13 @@ class IgnoreRoutesTest extends FeatureTestCase
         PhoneVerification::useRoutes(false);
     }
 
-    public function test_initiate_not_available()
+    public function test_initiation_not_available()
     {
         $response = $this->postJson('/phone-verification/initiate', ['to' =>'+380935258272']);
         $response->assertStatus(404);
     }
 
-    public function test_complete_not_available()
+    public function test_completion_not_available()
     {
         $response = $this->postJson('/phone-verification/complete', ['to' =>'+380935258272', 'otp' => 1234]);
         $response->assertStatus(404);

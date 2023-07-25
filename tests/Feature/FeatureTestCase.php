@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Redis;
 use Lunaweb\RedisMock\Providers\RedisMockServiceProvider;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
 
-use PhoneVerification;
+use AlexGeno\PhoneVerificationLaravel\Facades\PhoneVerification;
 
 
 abstract class FeatureTestCase extends OrchestraTestCase
