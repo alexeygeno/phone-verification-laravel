@@ -30,8 +30,7 @@ abstract class Otp extends Notification
     public function via(object $notifiable)
     {
         return app()->environment('production')
-        //return true
-                        ? [$this->channel()]
+            ? [$this->channel()]
             : [LogChannel::class];
     }
 

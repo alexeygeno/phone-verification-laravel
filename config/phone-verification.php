@@ -1,7 +1,7 @@
 <?php
 return [
     'storage' => env('PHONE_VERIFICATION_STORAGE', 'redis'),
-    'sender' => env('PHONE_VERIFICATION_SENDER', 'twilio'),
+    'sender' => env('PHONE_VERIFICATION_SENDER', 'vonage'),
     'routes' => true,
     'manager'   => [
         'rate_limits' => [
