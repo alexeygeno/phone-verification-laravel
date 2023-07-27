@@ -43,26 +43,23 @@ class UseRoutesTest extends FeatureTestCase
      */
     public function test_completion_ok()
     {
+        $otp = 1234;
+        $to = '+380935258272';
+
         $rand = $this->getFunctionMock('AlexGeno\PhoneVerification', 'rand');
+        $rand->expects($this->once())->willReturn($otp);
 
-        $rand->expects($this->once())->willReturn(1234);
-
-        $response = $this->postJson('/phone-verification/initiate', ['to' =>'+380935258272']);
-
+        $response = $this->postJson('/phone-verification/initiate', ['to' => $to]);
         $response->assertStatus(200);
-
         $response->assertJson(["ok"=>true, "message"=>trans(self::LANG_MESSAGES."initiation_success")]);
 
-        $response = $this->postJson('/phone-verification/complete', ['to' =>'+380935258272', 'otp' => 1234]);
-
+        $response = $this->postJson('/phone-verification/complete', ['to' =>$to, 'otp' => $otp]);
         $response->assertStatus(200);
-
         $response->assertJson(["ok"=>true, "message"=> trans(self::LANG_MESSAGES."completion_success")]);
     }
 
     public function test_completion_rate_limit_exceeded()
     {
-
         $this->app->config->set('phone-verification.manager.rate_limits.complete', ['count' => 0, 'period_secs' => 60]);
         $response = $this->postJson('/phone-verification/complete', ['to' =>'+380935258272', 'otp' => 0]);
 

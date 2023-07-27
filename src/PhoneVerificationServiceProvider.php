@@ -22,15 +22,16 @@ class PhoneVerificationServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->registerConfig();
-        $this->registerPhoneVerification();
         $this->registerStorage();
         $this->registerSender();
         $this->registerManager();
+        $this->registerPhoneVerification();
+
     }
 
     protected function registerPhoneVerification(){
-        $this->app->singleton(Manager::class, function() {
-            return new Manager();
+        $this->app->singleton(PhoneVerification::class, function() {
+            return new PhoneVerification();
         });
     }
 

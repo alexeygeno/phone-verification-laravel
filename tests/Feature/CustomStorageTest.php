@@ -4,7 +4,6 @@ namespace AlexGeno\PhoneVerificationLaravel\Tests\Feature;
 
 use AlexGeno\PhoneVerificationLaravel\Tests\Fixtures\Providers\CustomStorageServiceProvider;
 use AlexGeno\PhoneVerificationLaravel\Tests\Fixtures\Storages\Foo;
-use AlexGeno\PhoneVerificationLaravel\Tests\Fixtures\Factories\Storage;
 
 class CustomStorageTest extends FeatureTestCase
 {
