@@ -8,20 +8,26 @@ use NotificationChannels\Twilio\TwilioSmsMessage;
 
 class Twilio extends Otp
 {
-    /**
-     * Get the mail representation of the notification.
-     *
-     * @param  mixed  $notifiable
-     * @return
-     */
-    public function toTwilio($notifiable):TwilioSmsMessage
+    protected TwilioSmsMessage $twilioSmsMessage;
+
+    public function __construct(TwilioSmsMessage $twilioSmsMessage){
+        $this->twilioSmsMessage = $twilioSmsMessage;
+    }
+
+    public function toTwilio(object $notifiable):TwilioSmsMessage
     {
-        return (new TwilioSmsMessage())->content($this->text);
+        return $this->twilioSmsMessage;
     }
 
     protected function channel():string
     {
         return TwilioChannel::class;
+    }
+
+    public function content(string $content):self{
+        parent::content($content);
+        $this->twilioSmsMessage->content($content);
+        return $this;
     }
 
 }

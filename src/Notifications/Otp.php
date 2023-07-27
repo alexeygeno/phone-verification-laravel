@@ -12,20 +12,14 @@ abstract class Otp extends Notification
 {
     use Queueable;
 
-    protected string $text;
-
-    /**
-     * Create a new notification instance.
-     *
-     * @return void
-     */
-    public function __construct(string $text)
-    {
-        $this->text = $text;
-    }
+    protected string $content;
 
     protected abstract function channel():string;
 
+    protected function content(string $content):self{
+        $this->content = $content;
+        return $this;
+    }
 
     /**
      * Get the notification's delivery channels.
@@ -36,7 +30,8 @@ abstract class Otp extends Notification
     public function via(object $notifiable)
     {
         return app()->environment('production')
-            ? [$this->channel()]
+        //return true
+                        ? [$this->channel()]
             : [LogChannel::class];
     }
 
@@ -50,6 +45,6 @@ abstract class Otp extends Notification
     public function toLog(object $notifiable):LogMessage
     {
         $route = strtolower((new \ReflectionClass($this))->getShortName());
-        return new LogMessage("Pretended sms send to {$route}:. ".$notifiable->routeNotificationFor($route)." with message: {$this->text} ");
+        return new LogMessage("Pretended sms send to {$route}:. ".$notifiable->routeNotificationFor($route)." with message: {$this->content} ");
     }
 }

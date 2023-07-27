@@ -20,7 +20,7 @@
               "AlexGeno\\PhoneVerificationLaravel\\PhoneVerificationServiceProvider"
             ],
             "aliases": {
-                "PhoneVerification": "AlexGeno\\PhoneVerificationLaravel\\Facades\\PhoneVerification"
+                "PhoneVerification": "Manager"
             }
         }
     },

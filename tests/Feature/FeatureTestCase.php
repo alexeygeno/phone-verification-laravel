@@ -5,13 +5,16 @@ namespace AlexGeno\PhoneVerificationLaravel\Tests\Feature;
 use AlexGeno\PhoneVerificationLaravel\PhoneVerificationServiceProvider;
 use Illuminate\Support\Facades\Redis;
 use Lunaweb\RedisMock\Providers\RedisMockServiceProvider;
+use NotificationChannels\Messagebird\MessagebirdServiceProvider;
+use NotificationChannels\Twilio\TwilioProvider;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
-
-use AlexGeno\PhoneVerificationLaravel\Facades\PhoneVerification;
+use Illuminate\Notifications\VonageChannelServiceProvider;
 
 
 abstract class FeatureTestCase extends OrchestraTestCase
 {
+    protected string $serviceProvider =  PhoneVerificationServiceProvider::class;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -21,21 +24,23 @@ abstract class FeatureTestCase extends OrchestraTestCase
     protected function getEnvironmentSetUp($app):void
     {
         parent::getEnvironmentSetUp($app);
-        PhoneVerification::useRoutes(true);
+        $app->config->set('services.messagebird',
+            [
+             'access_key' => env('MESSAGEBIRD_ACCESS_KEY'),
+             'originator' =>  env('MESSAGEBIRD_ORIGINATOR'),
+             'recipients' => env('MESSAGEBIRD_RECIPIENTS')
+            ]
+        );
     }
 
     protected function getPackageProviders($app):array
     {
         return [
-            PhoneVerificationServiceProvider::class,
-            RedisMockServiceProvider::class
+            $this->serviceProvider,
+            RedisMockServiceProvider::class,
+            VonageChannelServiceProvider::class,
+            MessagebirdServiceProvider::class,
+            TwilioProvider::class,
         ];
     }
-    protected function getPackageAliases($app):array
-    {
-        return [
-            'PhoneVerification' => 'AlexGeno\PhoneVerificationLaravel\Facades\PhoneVerification'
-        ];
-    }
-
 }

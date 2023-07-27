@@ -8,15 +8,16 @@ use Illuminate\Notifications\Messages\VonageMessage;
 
 class Vonage extends Otp
 {
-    /**
-     * Get the mail representation of the notification.
-     *
-     * @param  mixed  $notifiable
-     * @return
-     */
-    public function toVonage($notifiable):VonageMessage
+    protected VonageMessage $vonageMessage;
+
+    public function __construct(VonageMessage $vonageMessage)
     {
-        return (new VonageMessage())->content($this->text);
+        $this->vonageMessage = $vonageMessage;
+    }
+
+    public function toVonage(object $notifiable):VonageMessage
+    {
+        return $this->vonageMessage;
     }
 
     protected function channel():string
@@ -24,4 +25,9 @@ class Vonage extends Otp
         return VonageSmsChannel::class;
     }
 
+    public function content(string $content):self{
+        parent::content($content);
+        $this->vonageMessage->content($content);
+        return $this;
+    }
 }

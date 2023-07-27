@@ -47,6 +47,7 @@ class Storage extends AlexGeno\PhoneVerificationLaravel\Factories\Storage
 }
 ```
 3. Customize the storage factory class using the **customStorageFactory** method. This method should typically be called in the boot method of your AppServiceProvider class
+
 ```php
 namespace App\Providers;
 
@@ -138,6 +139,7 @@ class Sender extends AlexGeno\PhoneVerificationLaravel\Factories\Sender
 }
 ```
 5. Customize the sender factory class using the **customSenderFactory** method. This method should typically be called in the boot method of your AppServiceProvider class
+
 ```php
 namespace App\Providers;
 
@@ -167,3 +169,11 @@ return [
     'sender' => 'vodafone'
 //...
 ];
+```
+
+##Tests
+
+```shell
+vendor/bin/testbench package:test  --filter 'AlexGeno\\PhoneVerificationLaravel\\Tests\\Feature\\UseRoutesTest::test_initiation_ok'
+```
+
