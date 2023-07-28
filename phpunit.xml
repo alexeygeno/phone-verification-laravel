@@ -25,18 +25,5 @@
     </coverage>
     <php>
         <env name="REDIS_CLIENT" value="mock"/>
-<!--        <env name="VONAGE_SMS_FROM" value="+380935258171"/>-->
-<!--        <env name="VONAGE_KEY" value="3a579f23"/>-->
-<!--        <env name="VONAGE_SECRET" value="MtAMZlUec518gzcc"/>-->
-<!--        <env name="VONAGE_APPLICATION_ID" value="PhoneVerification"/>-->
-
-<!--        <env name="MESSAGEBIRD_ACCESS_KEY" value="b9qHTq1VaiYOgPnn0DkBGsEng"/>-->
-<!--        <env name="MESSAGEBIRD_ORIGINATOR" value="PhoneVerif"/>-->
-<!--        <env name="MESSAGEBIRD_RECIPIENTS" value=""/>-->
-
-<!--        <env name="TWILIO_ACCOUNT_SID" value="ACdb5db6b3ff3ef225d2cdb385c670b0a7"/>-->
-<!--        <env name="TWILIO_AUTH_TOKEN" value="e7560a343cb72df26b8b8e0f6e3e8f9e"/>-->
-<!--        <env name="TWILIO_FROM" value="+16206369021"/>-->
-
     </php>
 </phpunit>
