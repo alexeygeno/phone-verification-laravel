@@ -21,7 +21,7 @@ class FacadeTest extends FeatureTestCase
 
         $rand = $this->getFunctionMock('AlexGeno\PhoneVerification', 'rand');
         $rand->expects($this->once())->willReturn($otp);
-        PhoneVerification::initiate($to);
+        $this->assertEmpty(PhoneVerification::initiate($to));
 
         $this->assertNotEmpty(PhoneVerification::complete($to, $otp));
 

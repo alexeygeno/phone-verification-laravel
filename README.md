@@ -177,3 +177,7 @@ return [
 vendor/bin/testbench package:test  --filter 'AlexGeno\\PhoneVerificationLaravel\\Tests\\Feature\\UseRoutesTest::test_initiation_ok'
 ```
 
+```shell
+vendor/bin/testbench package:test --coverage
+```
+

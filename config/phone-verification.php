@@ -4,6 +4,7 @@ return [
     'sender' => env('PHONE_VERIFICATION_SENDER', 'vonage'),
     'routes' => true,
     'manager'   => [
+        'otp' => ['length' => 4],
         'rate_limits' => [
             'initiate' => [
                 'period_secs' => 86400,
