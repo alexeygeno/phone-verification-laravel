@@ -37,7 +37,7 @@ class PhoneVerificationServiceProvider extends ServiceProvider
 
     protected function storages():array
     {
-        return [
+        return [ // storageClass, clientCallback
             'redis' => [\AlexGeno\PhoneVerification\Storage\Redis::class, fn() => Redis::connection()->client()],
             'mongodb' => [\AlexGeno\PhoneVerification\Storage\MongoDb::class, fn() => DB::connection('mongodb')->getMongoClient()]
         ];
@@ -55,11 +55,12 @@ class PhoneVerificationServiceProvider extends ServiceProvider
 
     protected function registerStorage():void{
         $this->app->bind(IStorage::class, function() {
-            $storage =  config('phone-verification.storage');
-            $storages = $this->storages();
-            $className = $storages[$storage][0];
-            $client = $storages[$storage][1]();
-            return $this->app->make($className, ['client'=>$client]);
+            $config =  config('phone-verification.storage');
+            $storageName = $config['name'];
+            $storage = $this->storages()[$storageName];
+            $className = current($storage);
+            $client = next($storage)();
+            return $this->app->make($className, ['client'=>$client, 'config' => $config[$storageName]]);
         });
     }
 
@@ -111,6 +112,7 @@ class PhoneVerificationServiceProvider extends ServiceProvider
     {
         $this->bootRoutes();
         $this->bootLang();
+        $this->bootMigrations();
         $this->bootPublishing();
     }
 
@@ -122,15 +124,22 @@ class PhoneVerificationServiceProvider extends ServiceProvider
             $this->publishes([
                 __DIR__ . '/../resources/lang' => resource_path('lang/vendor/phone-verification')
             ], 'phone-verification-lang');
+            $this->publishes([
+                __DIR__ . '/../database/migrations' => database_path('migrations')
+            ], 'phone-verification-migrations');
         }
     }
 
     protected function bootRoutes(){
-        if($this->app->config->get('phone-verification.routes')) {
+        if(config('phone-verification.routes')) {
             $this->loadRoutesFrom(__DIR__ . '/../routes/api.php');
         }
     }
     protected function bootLang(){
         $this->loadTranslationsFrom(__DIR__.'/../resources/lang','phone-verification');
+    }
+
+    protected function bootMigrations(){
+        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
     }
 }
