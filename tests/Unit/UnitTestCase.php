@@ -2,19 +2,15 @@
 
 namespace AlexGeno\PhoneVerificationLaravel\Tests\Unit;
 
-use AlexGeno\PhoneVerificationLaravel\PhoneVerificationServiceProvider;
-
-use Orchestra\Testbench\TestCase as OrchestraTestCase;
+use AlexGeno\PhoneVerificationLaravel\Tests\TestCase;
 
 
-abstract class UnitTestCase extends OrchestraTestCase
+abstract class UnitTestCase extends TestCase
 {
-    protected string $serviceProvider =  PhoneVerificationServiceProvider::class;
-
-    protected function getPackageProviders($app):array
+    protected function getEnvironmentSetUp($app):void
     {
-        return [
-            $this->serviceProvider,
-        ];
+        parent::getEnvironmentSetUp($app);
+        // Tests will be failed if notifications are not mocked
+        $app->config->set('phone-verification.sender.to_log', false);
     }
 }

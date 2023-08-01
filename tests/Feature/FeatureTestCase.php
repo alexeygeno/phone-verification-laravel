@@ -2,7 +2,7 @@
 
 namespace AlexGeno\PhoneVerificationLaravel\Tests\Feature;
 
-use AlexGeno\PhoneVerificationLaravel\Tests\Unit\UnitTestCase;
+use AlexGeno\PhoneVerificationLaravel\Tests\TestCase;
 use Illuminate\Support\Facades\Redis;
 use Lunaweb\RedisMock\Providers\RedisMockServiceProvider;
 //use NotificationChannels\Messagebird\MessagebirdServiceProvider;
@@ -10,7 +10,7 @@ use Lunaweb\RedisMock\Providers\RedisMockServiceProvider;
 //use Illuminate\Notifications\VonageChannelServiceProvider;
 
 
-abstract class FeatureTestCase extends UnitTestCase
+abstract class FeatureTestCase extends TestCase
 {
     protected function setUp(): void
     {
@@ -29,6 +29,13 @@ abstract class FeatureTestCase extends UnitTestCase
 //            ]
 //        );
 //    }
+
+    protected function getEnvironmentSetUp($app):void
+    {
+        parent::getEnvironmentSetUp($app);
+        // Debug notifications to log instead of real ones
+        $app->config->set('phone-verification.sender.to_log', true);
+    }
 
     protected function getPackageProviders($app):array
     {

@@ -1,22 +1,23 @@
 <?php
 
 namespace AlexGeno\PhoneVerificationLaravel\Notifications;
-use Illuminate\Bus\Queueable;
-use NotificationChannels\Twilio\TwilioChannel;
 use Illuminate\Notifications\Notification;
-use NotificationChannels\Twilio\TwilioSmsMessage;
 use NotificationChannels\Log\LogChannel;
 use NotificationChannels\Log\LogMessage;
 
-abstract class Otp extends Notification
+use Illuminate\Notifications\Channels\VonageSmsChannel;
+
+
+class Otp extends Notification
 {
-    use Queueable;
-
     protected string $content;
+    protected bool $toLog;
 
-    protected abstract function channel():string;
+    public function __construct(bool $toLog){
+        $this->toLog = $toLog;
+    }
 
-    protected function content(string $content):self{
+    public function content(string $content):self{
         $this->content = $content;
         return $this;
     }
@@ -29,11 +30,23 @@ abstract class Otp extends Notification
      */
     public function via(object $notifiable)
     {
-        return app()->environment('production')
-            ? [$this->channel()]
-            : [LogChannel::class];
+        return $this->toLog
+            ? [LogChannel::class]
+            : array_keys($notifiable->routes);
     }
 
+    public function toVonage(object $notifiable):string
+    {
+        return $this->content;
+    }
+    public function toTwilio(object $notifiable):string
+    {
+        return $this->content;
+    }
+    public function toMessagebird(object $notifiable):string
+    {
+        return $this->content;
+    }
 
     /**
      * Get the log message representation of the notification.
@@ -43,7 +56,7 @@ abstract class Otp extends Notification
      */
     public function toLog(object $notifiable):LogMessage
     {
-        $route = strtolower((new \ReflectionClass($this))->getShortName());
+        $route = current($notifiable->routes);
         return new LogMessage("Pretended sms send to {$route}:. ".$notifiable->routeNotificationFor($route)." with message: {$this->content} ");
     }
 }

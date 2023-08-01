@@ -3,6 +3,7 @@
 namespace AlexGeno\PhoneVerificationLaravel;
 
 
+use AlexGeno\PhoneVerificationLaravel\Notifications\Otp;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\ServiceProvider;
@@ -25,12 +26,13 @@ class PhoneVerificationServiceProvider extends ServiceProvider
         $this->registerStorage();
         $this->registerSender();
         $this->registerManager();
+        $this->registerNotification();
         $this->registerPhoneVerification();
 
     }
 
     protected function registerPhoneVerification(){
-        $this->app->singleton(PhoneVerification::class, function() {
+        $this->app->singleton(PhoneVerification::class, function($container) {
             return new PhoneVerification();
         });
     }
@@ -54,21 +56,29 @@ class PhoneVerificationServiceProvider extends ServiceProvider
     }
 
     protected function registerStorage():void{
-        $this->app->bind(IStorage::class, function() {
+        $this->app->bind(IStorage::class, function($container) {
             $config =  config('phone-verification.storage');
-            $storageName = $config['name'];
-            $storage = $this->storages()[$storageName];
+            $driver = $config['driver'];
+            $storages = $this->storages();
+            $storage = $storages[$driver];
             $className = current($storage);
             $client = next($storage)();
-            return $this->app->make($className, ['client'=>$client, 'config' => $config[$storageName]]);
+            return $container->make($className, ['client'=>$client, 'config' => $config[$driver]]);
         });
     }
 
     protected function registerSender():void{
-        $this->app->bind(ISender::class, function() {
-            $sender =  config('phone-verification.sender');
+        $this->app->bind(ISender::class, function($container) {
+            $driver =  config('phone-verification.sender.driver');
             $senders = $this->senders();
-            return $this->app->make($senders[$sender]);
+            return $container->make($senders[$driver]);
+        });
+    }
+
+    protected function registerNotification():void{
+        $this->app->bind(Otp::class, function ($container) {
+            $toLog = config('phone-verification.sender.to_log');
+            return new Otp($toLog);
         });
     }
 

@@ -12,7 +12,7 @@ class CustomStorageTest extends FeatureTestCase
     public function test_custom_storage_available(){
         $this->app->config->set('phone-verification.storage',
             [
-                'name' => 'foo',
+                'driver' => 'foo',
                 'foo' => [
                     'setting1' => 'val1',
                     'setting2' => 'val2',
