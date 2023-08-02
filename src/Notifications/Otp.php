@@ -27,7 +27,6 @@ class Otp extends Notification
     /**
      * Get the notification's delivery channels.
      *
-     * @param  mixed  $notifiable
      * @return array
      */
     public function via(object $notifiable)
@@ -40,8 +39,6 @@ class Otp extends Notification
     /**
      * Returns $this->content for the methods: toMessagebird, toTwilio, toVonage, ...
      * If you need custom behaviour just add the "to{Driver}" method to this class
-     *
-     * @return string
      */
     public function __call(string $name, array $args)
     {
@@ -53,13 +50,12 @@ class Otp extends Notification
     /**
      * Get the log message representation of the notification.
      *
-     * @param  mixed  $notifiable
      * @return LogMessage
      */
     public function toLog(object $notifiable)
     {
-        $routes = implode(',', $notifiable->routes);
+        $route = current($notifiable->routes);
 
-        return new LogMessage("Pretended sms send to {$routes}:. ".$notifiable->routeNotificationFor($route)." with message: {$this->content} ");
+        return new LogMessage("Pretended sms send to {$route}:. ".$notifiable->routeNotificationFor($route)." with message: {$this->content} ");
     }
 }

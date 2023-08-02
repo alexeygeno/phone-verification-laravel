@@ -11,7 +11,7 @@ class CustomSenderTest extends FeatureTestCase
 
     public function test_custom_sender_available()
     {
-        $this->app->config->set('phone-verification.sender.driver', 'foo');
+        config(['phone-verification.sender.driver' => 'foo']);
 
         $fooSender = $this->app->make(\AlexGeno\PhoneVerification\Sender\I::class);
         $this->assertInstanceOf(Foo::class, $fooSender);

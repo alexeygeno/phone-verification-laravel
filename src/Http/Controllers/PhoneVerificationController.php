@@ -29,7 +29,7 @@ class PhoneVerificationController extends Controller
         $response = ['ok' => true, 'message' => trans('phone-verification::messages.completion_success')];
         $status = 200;
         try {
-            $manager->complete($request->post('to'), $request->post('otp'));
+            $manager->complete($request->post('to'), (int) $request->post('otp'));
         } catch (Exception $e) {
             $response = ['ok' => false, 'message' => $e->getMessage()];
             $status = 406;

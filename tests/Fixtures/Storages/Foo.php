@@ -11,6 +11,7 @@ class Foo implements I
      */
     public function sessionUp(string $sessionId, int $otp, int $sessionExpSecs, int $sessionCounterExpSecs): self
     {
+        return $this;
     }
 
     /**
@@ -18,6 +19,7 @@ class Foo implements I
      */
     public function sessionDown(string $sessionId): self
     {
+        return $this;
     }
 
     /**
@@ -25,6 +27,7 @@ class Foo implements I
      */
     public function sessionCounter(string $sessionId): int
     {
+        return 0;
     }
 
     /**
@@ -32,6 +35,7 @@ class Foo implements I
      */
     public function otp(string $sessionId): int
     {
+        return 0;
     }
 
     /**
@@ -39,6 +43,7 @@ class Foo implements I
      */
     public function otpCheckIncrement(string $sessionId): self
     {
+        return $this;
     }
 
     /**
@@ -46,5 +51,6 @@ class Foo implements I
      */
     public function otpCheckCounter(string $sessionId): int
     {
+        return 0;
     }
 }

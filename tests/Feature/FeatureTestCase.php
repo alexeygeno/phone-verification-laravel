@@ -34,7 +34,7 @@ abstract class FeatureTestCase extends TestCase
     {
         parent::getEnvironmentSetUp($app);
         // Debug notifications to log instead of real ones
-        $app->config->set('phone-verification.sender.to_log', true);
+        config(['phone-verification.sender.to_log' => true]);
     }
 
     protected function getPackageProviders($app)

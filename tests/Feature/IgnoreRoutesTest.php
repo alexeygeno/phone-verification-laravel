@@ -7,7 +7,7 @@ class IgnoreRoutesTest extends FeatureTestCase
     protected function getEnvironmentSetUp($app)
     {
         parent::getEnvironmentSetUp($app);
-        $app->config->set('phone-verification.routes', false);
+        config(['phone-verification.routes' => false]);
     }
 
     public function test_initiation_not_available()

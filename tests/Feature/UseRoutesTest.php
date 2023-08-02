@@ -26,7 +26,7 @@ class UseRoutesTest extends FeatureTestCase
 
     public function test_initiation_rate_limit_exceeded()
     {
-        $this->app->config->set('phone-verification.manager.rate_limits.initiate', ['count' => 0, 'period_secs' => 3600]);
+        config(['phone-verification.manager.rate_limits.initiate' => ['count' => 0, 'period_secs' => 3600]]);
         $response = $this->postJson('/phone-verification/initiate', ['to' => '+15417543010']);
 
         $response->assertStatus(406);
@@ -61,7 +61,7 @@ class UseRoutesTest extends FeatureTestCase
 
     public function test_completion_rate_limit_exceeded()
     {
-        $this->app->config->set('phone-verification.manager.rate_limits.complete', ['count' => 0, 'period_secs' => 60]);
+        config(['phone-verification.manager.rate_limits.complete' => ['count' => 0, 'period_secs' => 60]]);
         $response = $this->postJson('/phone-verification/complete', ['to' => '+15417543010', 'otp' => 0]);
 
         $response->assertStatus(406);

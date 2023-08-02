@@ -10,6 +10,6 @@ abstract class UnitTestCase extends TestCase
     {
         parent::getEnvironmentSetUp($app);
         // Tests will be failed if notifications are not mocked
-        $app->config->set('phone-verification.sender.to_log', false);
+        config(['phone-verification.sender.to_log' => false]);
     }
 }
