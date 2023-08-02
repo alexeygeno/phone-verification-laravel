@@ -2,7 +2,6 @@
 
 namespace AlexGeno\PhoneVerificationLaravel\Senders;
 
-class Messagebird  extends Sender
+class Messagebird extends Sender
 {
-
 }

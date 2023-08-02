@@ -3,33 +3,30 @@
 namespace AlexGeno\PhoneVerificationLaravel\Tests\Unit;
 
 use AlexGeno\PhoneVerificationLaravel\Notifications\Otp;
-use Illuminate\Support\Facades\Notification;
 use Illuminate\Notifications\AnonymousNotifiable;
+use Illuminate\Support\Facades\Notification;
 
 class SendersTest extends UnitTestCase
 {
-
     public function meta()
     {
         return [
-           [
-               'messagebird',
-               \AlexGeno\PhoneVerificationLaravel\Senders\Messagebird::class,
-           ],
-           [
+            [
+                'messagebird',
+                \AlexGeno\PhoneVerificationLaravel\Senders\Messagebird::class,
+            ],
+            [
                 'vonage',
                 \AlexGeno\PhoneVerificationLaravel\Senders\Vonage::class,
-           ],
+            ],
             [
                 'twilio',
                 \AlexGeno\PhoneVerificationLaravel\Senders\Twilio::class,
-            ]
+            ],
         ];
     }
 
     /**
-     * @param $channel
-     * @param $sender
      * @dataProvider meta
      */
     public function test_notification_invocation_ok($channel, $sender)
@@ -39,16 +36,16 @@ class SendersTest extends UnitTestCase
 
         Notification::fake();
 
-        app($sender)->invoke($to, $text);;
+        app($sender)->invoke($to, $text);
 
         Notification::assertSentOnDemand(Otp::class,
-            function ($notification,  array $channels, AnonymousNotifiable $notifiable)  use($channel, $text, $to) {
+            function ($notification, array $channels, AnonymousNotifiable $notifiable) use ($channel, $text, $to) {
                 $toMethod = 'to'.ucfirst($channel);
-                return ($notification->$toMethod($notifiable) == $text &&
+
+                return $notification->$toMethod($notifiable) == $text &&
                     $notification->via($notifiable) == [$channel] &&
-                    $notifiable->routeNotificationFor($channel) == $to);
+                    $notifiable->routeNotificationFor($channel) == $to;
             }
         );
-
     }
 }

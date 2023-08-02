@@ -2,18 +2,15 @@
 
 namespace AlexGeno\PhoneVerificationLaravel;
 
-
+use AlexGeno\PhoneVerification\Manager;
+use AlexGeno\PhoneVerification\Manager\Completer;
+use AlexGeno\PhoneVerification\Manager\Initiator;
+use AlexGeno\PhoneVerification\Sender\I as ISender;
+use AlexGeno\PhoneVerification\Storage\I as IStorage;
 use AlexGeno\PhoneVerificationLaravel\Notifications\Otp;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\ServiceProvider;
-
-use AlexGeno\PhoneVerification\Manager;
-use AlexGeno\PhoneVerification\Manager\Initiator;
-use AlexGeno\PhoneVerification\Manager\Completer;
-use AlexGeno\PhoneVerification\Storage\I as IStorage;
-use AlexGeno\PhoneVerification\Sender\I as ISender;
-
 
 class PhoneVerificationServiceProvider extends ServiceProvider
 {
@@ -28,11 +25,11 @@ class PhoneVerificationServiceProvider extends ServiceProvider
         $this->registerManager();
         $this->registerNotification();
         $this->registerPhoneVerification();
-
     }
 
-    protected function registerPhoneVerification(){
-        $this->app->singleton(PhoneVerification::class, function($container) {
+    protected function registerPhoneVerification()
+    {
+        $this->app->singleton(PhoneVerification::class, function ($container) {
             return new PhoneVerification();
         });
     }
@@ -40,11 +37,10 @@ class PhoneVerificationServiceProvider extends ServiceProvider
     protected function storages()
     {
         return [ // storageClass, clientCallback
-            'redis' => [\AlexGeno\PhoneVerification\Storage\Redis::class, fn() => Redis::connection()->client()],
-            'mongodb' => [\AlexGeno\PhoneVerification\Storage\MongoDb::class, fn() => DB::connection('mongodb')->getMongoClient()]
+            'redis' => [\AlexGeno\PhoneVerification\Storage\Redis::class, fn () => Redis::connection()->client()],
+            'mongodb' => [\AlexGeno\PhoneVerification\Storage\MongoDb::class, fn () => DB::connection('mongodb')->getMongoClient()],
         ];
     }
-
 
     protected function senders()
     {
@@ -57,28 +53,33 @@ class PhoneVerificationServiceProvider extends ServiceProvider
 
     protected function registerStorage()
     {
-        $this->app->bind(IStorage::class, function($container) {
-            $config =  config('phone-verification.storage');
+        $this->app->bind(IStorage::class, function ($container) {
+            $config = config('phone-verification.storage');
             $driver = $config['driver'];
             $storages = $this->storages();
             $storage = $storages[$driver];
             $className = current($storage);
             $client = next($storage)();
-            return $container->make($className, ['client'=>$client, 'config' => $config[$driver]]);
+
+            return $container->make($className, ['client' => $client, 'config' => $config[$driver]]);
         });
     }
 
-    protected function registerSender(){
-        $this->app->bind(ISender::class, function($container) {
-            $driver =  config('phone-verification.sender.driver');
+    protected function registerSender()
+    {
+        $this->app->bind(ISender::class, function ($container) {
+            $driver = config('phone-verification.sender.driver');
             $senders = $this->senders();
+
             return $container->make($senders[$driver]);
         });
     }
 
-    protected function registerNotification(){
+    protected function registerNotification()
+    {
         $this->app->bind(Otp::class, function ($container) {
             $toLog = config('phone-verification.sender.to_log');
+
             return new Otp($toLog);
         });
     }
@@ -88,27 +89,23 @@ class PhoneVerificationServiceProvider extends ServiceProvider
         $config = config('phone-verification.manager');
         // load translated messages
         $langPrefix = 'phone-verification::messages';
-        $config['otp']['message'] = fn($otp) =>
-            trans("$langPrefix.otp", ['code' => $otp]);
-        $config['rate_limits']['initiate']['message'] = fn($phone, $periodSecs, $count) =>
-            trans("$langPrefix.initiation_rate_limit", ['sms' => $count, 'hours' => $periodSecs/60/60]);
-        $config['rate_limits']['complete']['message'] = fn($phone, $periodSecs, $count) =>
-            trans("$langPrefix.completion_rate_limit", ['times' => $count, 'minutes' => $periodSecs/60]);
-        $config['otp']['message_expired'] = fn($periodSecs, $otp) =>
-            trans("$langPrefix.expired", ['minutes' => $periodSecs/60]);
-        $config['otp']['message_incorrect'] = fn($otp) =>
-            trans("$langPrefix.incorrect");
+        $config['otp']['message'] = fn ($otp) => trans("$langPrefix.otp", ['code' => $otp]);
+        $config['rate_limits']['initiate']['message'] = fn ($phone, $periodSecs, $count) => trans("$langPrefix.initiation_rate_limit", ['sms' => $count, 'hours' => $periodSecs / 60 / 60]);
+        $config['rate_limits']['complete']['message'] = fn ($phone, $periodSecs, $count) => trans("$langPrefix.completion_rate_limit", ['times' => $count, 'minutes' => $periodSecs / 60]);
+        $config['otp']['message_expired'] = fn ($periodSecs, $otp) => trans("$langPrefix.expired", ['minutes' => $periodSecs / 60]);
+        $config['otp']['message_incorrect'] = fn ($otp) => trans("$langPrefix.incorrect");
+
         return $config;
     }
 
-    protected function registerManager(){
-
+    protected function registerManager()
+    {
         $this->app->bind(Initiator::class, function ($container) {
             return (new Manager($container->make(IStorage::class), $this->config()))
                 ->sender($container->make(ISender::class));
         });
-        $this->app->bind(Completer::class, function($container)  {
-            return (new Manager($container->make(IStorage::class), $this->config()));
+        $this->app->bind(Completer::class, function ($container) {
+            return new Manager($container->make(IStorage::class), $this->config());
         });
     }
 
@@ -128,30 +125,35 @@ class PhoneVerificationServiceProvider extends ServiceProvider
         $this->bootPublishing();
     }
 
-    protected function bootPublishing(){
+    protected function bootPublishing()
+    {
         if ($this->app->runningInConsole()) {
             $this->publishes([
-                __DIR__ . '/../config/phone-verification.php' => config_path('phone-verification.php')
+                __DIR__.'/../config/phone-verification.php' => config_path('phone-verification.php'),
             ], 'phone-verification-config');
             $this->publishes([
-                __DIR__ . '/../resources/lang' => resource_path('lang/vendor/phone-verification')
+                __DIR__.'/../resources/lang' => resource_path('lang/vendor/phone-verification'),
             ], 'phone-verification-lang');
             $this->publishes([
-                __DIR__ . '/../database/migrations' => database_path('migrations')
+                __DIR__.'/../database/migrations' => database_path('migrations'),
             ], 'phone-verification-migrations');
         }
     }
 
-    protected function bootRoutes(){
-        if(config('phone-verification.routes')) {
-            $this->loadRoutesFrom(__DIR__ . '/../routes/api.php');
+    protected function bootRoutes()
+    {
+        if (config('phone-verification.routes')) {
+            $this->loadRoutesFrom(__DIR__.'/../routes/api.php');
         }
     }
-    protected function bootLang(){
-        $this->loadTranslationsFrom(__DIR__.'/../resources/lang','phone-verification');
+
+    protected function bootLang()
+    {
+        $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'phone-verification');
     }
 
-    protected function bootMigrations(){
+    protected function bootMigrations()
+    {
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
     }
 }

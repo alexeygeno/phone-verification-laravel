@@ -5,10 +5,10 @@ namespace AlexGeno\PhoneVerificationLaravel\Tests\Feature;
 use AlexGeno\PhoneVerificationLaravel\Tests\TestCase;
 use Illuminate\Support\Facades\Redis;
 use Lunaweb\RedisMock\Providers\RedisMockServiceProvider;
+
 //use NotificationChannels\Messagebird\MessagebirdServiceProvider;
 //use NotificationChannels\Twilio\TwilioProvider;
 //use Illuminate\Notifications\VonageChannelServiceProvider;
-
 
 abstract class FeatureTestCase extends TestCase
 {
@@ -41,9 +41,9 @@ abstract class FeatureTestCase extends TestCase
     {
         return array_merge(parent::getPackageProviders($app), [
             RedisMockServiceProvider::class,
-//            VonageChannelServiceProvider::class,
-//            MessagebirdServiceProvider::class,
-//            TwilioProvider::class
+            //            VonageChannelServiceProvider::class,
+            //            MessagebirdServiceProvider::class,
+            //            TwilioProvider::class
         ]);
     }
 }

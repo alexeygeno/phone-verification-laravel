@@ -4,7 +4,6 @@ namespace AlexGeno\PhoneVerificationLaravel\Tests\Unit;
 
 use AlexGeno\PhoneVerificationLaravel\Tests\TestCase;
 
-
 abstract class UnitTestCase extends TestCase
 {
     protected function getEnvironmentSetUp($app)

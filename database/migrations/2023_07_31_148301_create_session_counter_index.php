@@ -25,7 +25,7 @@ return new class extends Migration
         Schema::table($this->collectionName, function (Blueprint $collection) {
             $collection->index(['id' => 1], 'id_unique_index', null, ['unique' => true]);
             $collection->index(['created' => 1], 'created_expiration_index', null,
-                               ['expireAfterSeconds' => config('phone-verification.manager.rate_limits.complete.period_secs')]
+                ['expireAfterSeconds' => config('phone-verification.manager.rate_limits.complete.period_secs')]
             );
         });
     }

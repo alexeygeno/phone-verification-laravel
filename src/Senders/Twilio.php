@@ -2,7 +2,6 @@
 
 namespace AlexGeno\PhoneVerificationLaravel\Senders;
 
-class Twilio  extends Sender
+class Twilio extends Sender
 {
-
 }

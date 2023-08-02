@@ -7,5 +7,5 @@ return [
     'initiation_success' => 'An sms has been sent. Check your phone!',
     'completion_success' => 'The verification is done!',
     'expired' => 'Code is expired. You have only :minutes minutes to use it',
-    'incorrect' => 'Code is incorrect'
+    'incorrect' => 'Code is incorrect',
 ];

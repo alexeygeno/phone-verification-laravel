@@ -1,16 +1,19 @@
 <?php
 
 namespace AlexGeno\PhoneVerificationLaravel\Tests\Feature;
-use AlexGeno\PhoneVerificationLaravel\Facades\PhoneVerification;
 
+use AlexGeno\PhoneVerificationLaravel\Facades\PhoneVerification;
 use phpmock\phpunit\PHPMock;
 
 class FacadeTest extends FeatureTestCase
 {
     use PHPMock;
+
     /**
      * @runInSeparateProcess
+     *
      * @preserveGlobalState disabled
+     *
      * @see https://github.com/php-mock/php-mock-phpunit#restrictions
      * @see https://github.com/orchestral/testbench/issues/371#issuecomment-1649239817
      */
@@ -24,6 +27,5 @@ class FacadeTest extends FeatureTestCase
         $this->assertEmpty(PhoneVerification::initiate($to));
 
         $this->assertNotEmpty(PhoneVerification::complete($to, $otp));
-
     }
 }
