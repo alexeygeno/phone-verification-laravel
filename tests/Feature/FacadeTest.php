@@ -17,7 +17,7 @@ class FacadeTest extends FeatureTestCase
     public function test_process_ok()
     {
         $otp = 1234;
-        $to = '+380935258272';
+        $to = '+15417543010';
 
         $rand = $this->getFunctionMock('AlexGeno\PhoneVerification', 'rand');
         $rand->expects($this->once())->willReturn($otp);

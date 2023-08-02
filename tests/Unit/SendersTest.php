@@ -35,7 +35,7 @@ class SendersTest extends UnitTestCase
     public function test_notification_invocation_ok($channel, $sender)
     {
         $text = 'Test text';
-        $to = '+380935258272';
+        $to = '+15417543010';
 
         Notification::fake();
 
