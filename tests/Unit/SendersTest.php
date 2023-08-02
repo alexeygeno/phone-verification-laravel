@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Notification;
 
 class SendersTest extends UnitTestCase
 {
-    public function meta()
+    public function senders()
     {
         return [
             [
@@ -27,7 +27,7 @@ class SendersTest extends UnitTestCase
     }
 
     /**
-     * @dataProvider meta
+     * @dataProvider senders
      */
     public function test_notification_invocation_ok($channel, $sender)
     {

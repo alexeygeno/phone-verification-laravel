@@ -1,6 +1,6 @@
 <?php
 
-namespace AlexGeno\PhoneVerificationLaravel\Tests\Fixtures\Providers;
+namespace AlexGeno\PhoneVerificationLaravel\Tests\Feature\Providers;
 
 use AlexGeno\PhoneVerificationLaravel\PhoneVerificationServiceProvider;
 

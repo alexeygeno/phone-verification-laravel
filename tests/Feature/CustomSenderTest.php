@@ -2,7 +2,7 @@
 
 namespace AlexGeno\PhoneVerificationLaravel\Tests\Feature;
 
-use AlexGeno\PhoneVerificationLaravel\Tests\Fixtures\Providers\CustomSenderServiceProvider;
+use AlexGeno\PhoneVerificationLaravel\Tests\Feature\Providers\CustomSenderServiceProvider;
 use AlexGeno\PhoneVerificationLaravel\Tests\Fixtures\Senders\Foo;
 
 class CustomSenderTest extends FeatureTestCase
