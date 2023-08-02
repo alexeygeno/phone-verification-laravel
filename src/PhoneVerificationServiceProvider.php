@@ -7,6 +7,8 @@ use AlexGeno\PhoneVerification\Manager\Completer;
 use AlexGeno\PhoneVerification\Manager\Initiator;
 use AlexGeno\PhoneVerification\Sender\I as ISender;
 use AlexGeno\PhoneVerification\Storage\I as IStorage;
+use AlexGeno\PhoneVerificationLaravel\Commands\Complete;
+use AlexGeno\PhoneVerificationLaravel\Commands\Initiate;
 use AlexGeno\PhoneVerificationLaravel\Notifications\Otp;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
@@ -123,6 +125,7 @@ class PhoneVerificationServiceProvider extends ServiceProvider
         $this->bootLang();
         $this->bootMigrations();
         $this->bootPublishing();
+        $this->bootCommands();
     }
 
     protected function bootPublishing()
@@ -137,6 +140,16 @@ class PhoneVerificationServiceProvider extends ServiceProvider
             $this->publishes([
                 __DIR__.'/../database/migrations' => database_path('migrations'),
             ], 'phone-verification-migrations');
+        }
+    }
+
+    protected function bootCommands()
+    {
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                Initiate::class,
+                Complete::class,
+            ]);
         }
     }
 

@@ -18,7 +18,7 @@ return [
         'driver' => env('PHONE_VERIFICATION_SENDER', 'vonage'), // vonage || twilio || messagebird
         'to_log' => false, // if enabled: instead of sending a real notification, debug it to the app log
     ],
-    'routes' => true, // if the package route is enabled
+    'routes' => true, // managing the availability of the package routes without redefining the service provider
     'manager' => [
         'otp' => ['length' => env('PHONE_VERIFICATION_OTP_LENGTH', 4)],
         'rate_limits' => [
