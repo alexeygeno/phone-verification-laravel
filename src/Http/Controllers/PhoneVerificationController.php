@@ -2,6 +2,7 @@
 
 namespace AlexGeno\PhoneVerificationLaravel\Http\Controllers;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 
@@ -11,7 +12,8 @@ use AlexGeno\PhoneVerification\Manager\Completer;
 
 class PhoneVerificationController extends Controller
 {
-    public function initiate(Initiator $manager, Request $request):\Illuminate\Http\JsonResponse{
+    public function initiate(Initiator $manager, Request $request)
+    {
         $response = ['ok' => true, 'message' => trans("phone-verification::messages.initiation_success")];
         $status = 200;
         try {
@@ -23,7 +25,8 @@ class PhoneVerificationController extends Controller
         return response()->json($response, $status);
     }
 
-    public function complete(Completer $manager, Request $request):\Illuminate\Http\JsonResponse{
+    public function complete(Completer $manager, Request $request)
+    {
         $response = ['ok' => true, 'message' => trans("phone-verification::messages.completion_success")];
         $status = 200;
         try {

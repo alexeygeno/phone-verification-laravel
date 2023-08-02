@@ -9,7 +9,7 @@ use Illuminate\Notifications\AnonymousNotifiable;
 class SendersTest extends UnitTestCase
 {
 
-    public function meta():array
+    public function meta()
     {
         return [
            [

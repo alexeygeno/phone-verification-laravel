@@ -5,8 +5,6 @@ use Illuminate\Notifications\Notification;
 use NotificationChannels\Log\LogChannel;
 use NotificationChannels\Log\LogMessage;
 
-use Illuminate\Notifications\Channels\VonageSmsChannel;
-
 
 class Otp extends Notification
 {
@@ -17,7 +15,7 @@ class Otp extends Notification
         $this->toLog = $toLog;
     }
 
-    public function content(string $content):self{
+    public function content(string $content){
         $this->content = $content;
         return $this;
     }
@@ -35,17 +33,17 @@ class Otp extends Notification
             : array_keys($notifiable->routes);
     }
 
-    public function toVonage(object $notifiable):string
-    {
-        return $this->content;
-    }
-    public function toTwilio(object $notifiable):string
-    {
-        return $this->content;
-    }
-    public function toMessagebird(object $notifiable):string
-    {
-        return $this->content;
+    /**
+     * Returns $this->content for the methods: toMessagebird, toTwilio, toVonage, ...
+     * If you need custom behaviour just add the "to{Driver}" method to this class
+     * @param string $name
+     * @param array $args
+     * @return string
+     */
+    public function __call(string $name, array $args){
+        if(str_starts_with($name, 'to') and count($args) == 1 and is_object(current($args))){
+            return $this->content;
+        }
     }
 
     /**
@@ -54,9 +52,9 @@ class Otp extends Notification
      * @param  mixed  $notifiable
      * @return LogMessage
      */
-    public function toLog(object $notifiable):LogMessage
+    public function toLog(object $notifiable)
     {
-        $route = current($notifiable->routes);
-        return new LogMessage("Pretended sms send to {$route}:. ".$notifiable->routeNotificationFor($route)." with message: {$this->content} ");
+        $routes = implode(',', $notifiable->routes);
+        return new LogMessage("Pretended sms send to {$routes}:. ".$notifiable->routeNotificationFor($route)." with message: {$this->content} ");
     }
 }

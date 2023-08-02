@@ -8,7 +8,7 @@ abstract class TestCase extends \Orchestra\Testbench\TestCase
 {
     protected string $serviceProvider =  PhoneVerificationServiceProvider::class;
 
-    protected function getPackageProviders($app):array
+    protected function getPackageProviders($app)
     {
         return [
             $this->serviceProvider

@@ -20,7 +20,7 @@ class PhoneVerificationServiceProvider extends ServiceProvider
     /**
      * Register services.
      */
-    public function register(): void
+    public function register()
     {
         $this->registerConfig();
         $this->registerStorage();
@@ -37,7 +37,7 @@ class PhoneVerificationServiceProvider extends ServiceProvider
         });
     }
 
-    protected function storages():array
+    protected function storages()
     {
         return [ // storageClass, clientCallback
             'redis' => [\AlexGeno\PhoneVerification\Storage\Redis::class, fn() => Redis::connection()->client()],
@@ -46,7 +46,7 @@ class PhoneVerificationServiceProvider extends ServiceProvider
     }
 
 
-    protected function senders():array
+    protected function senders()
     {
         return [
             'vonage' => \AlexGeno\PhoneVerificationLaravel\Senders\Vonage::class,
@@ -55,7 +55,8 @@ class PhoneVerificationServiceProvider extends ServiceProvider
         ];
     }
 
-    protected function registerStorage():void{
+    protected function registerStorage()
+    {
         $this->app->bind(IStorage::class, function($container) {
             $config =  config('phone-verification.storage');
             $driver = $config['driver'];
@@ -67,7 +68,7 @@ class PhoneVerificationServiceProvider extends ServiceProvider
         });
     }
 
-    protected function registerSender():void{
+    protected function registerSender(){
         $this->app->bind(ISender::class, function($container) {
             $driver =  config('phone-verification.sender.driver');
             $senders = $this->senders();
@@ -75,14 +76,15 @@ class PhoneVerificationServiceProvider extends ServiceProvider
         });
     }
 
-    protected function registerNotification():void{
+    protected function registerNotification(){
         $this->app->bind(Otp::class, function ($container) {
             $toLog = config('phone-verification.sender.to_log');
             return new Otp($toLog);
         });
     }
 
-    protected function config():array{
+    protected function config()
+    {
         $config = config('phone-verification.manager');
         // load translated messages
         $langPrefix = 'phone-verification::messages';
@@ -99,7 +101,7 @@ class PhoneVerificationServiceProvider extends ServiceProvider
         return $config;
     }
 
-    protected function registerManager():void{
+    protected function registerManager(){
 
         $this->app->bind(Initiator::class, function ($container) {
             return (new Manager($container->make(IStorage::class), $this->config()))
@@ -110,7 +112,7 @@ class PhoneVerificationServiceProvider extends ServiceProvider
         });
     }
 
-    protected function registerConfig():void
+    protected function registerConfig()
     {
         $this->mergeConfigFrom(__DIR__.'/../config/phone-verification.php', 'phone-verification');
     }
@@ -118,7 +120,7 @@ class PhoneVerificationServiceProvider extends ServiceProvider
     /**
      * Bootstrap services.
      */
-    public function boot(): void
+    public function boot()
     {
         $this->bootRoutes();
         $this->bootLang();

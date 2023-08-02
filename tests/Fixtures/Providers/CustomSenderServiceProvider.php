@@ -6,7 +6,8 @@ use AlexGeno\PhoneVerificationLaravel\PhoneVerificationServiceProvider;
 
 class CustomSenderServiceProvider extends PhoneVerificationServiceProvider
 {
-    protected function senders():array{
+    protected function senders()
+    {
         return
             parent::senders() +
             ['foo' => \AlexGeno\PhoneVerificationLaravel\Tests\Fixtures\Senders\Foo::class];

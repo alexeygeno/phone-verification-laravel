@@ -15,7 +15,7 @@ return [
     ],
     'sender' => [
         'driver' => env('PHONE_VERIFICATION_SENDER', 'vonage'), // vonage || twilio || messagebird
-        'to_log' => false // instead of sending a real notification, debug it to the app log
+        'to_log' => false // if enabled: instead of sending a real notification, debug it to the app log
     ],
     'routes' => true, // if the package route is enabled
     'manager'   => [
