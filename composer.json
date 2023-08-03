@@ -1,7 +1,6 @@
 {
     "name": "alexgeno/phone-verification-laravel",
     "description":"An extensible and configurable php library to verify a phone",
-
     "type": "library",
     "license": "MIT",
     "autoload": {
@@ -18,10 +17,7 @@
         "laravel": {
             "providers": [
               "AlexGeno\\PhoneVerificationLaravel\\PhoneVerificationServiceProvider"
-            ],
-            "aliases": {
-                "PhoneVerification": "Manager"
-            }
+            ]
         }
     },
     "authors": [
