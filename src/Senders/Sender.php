@@ -10,14 +10,21 @@ abstract class Sender implements I
 {
     protected Otp $otp;
 
-    public function __construct(Otp $otp)
+    protected bool $toLog;
+
+    public function __construct(Otp $otp, bool $toLog)
     {
         $this->otp = $otp;
+        $this->toLog = $toLog;
     }
 
     public function invoke(string $to, string $text)
     {
         $channel = strtolower((new \ReflectionClass($this))->getShortName());
-        Notification::route($channel, $to)->notify($this->otp->content($text));
+        if ($this->toLog) {
+            \Illuminate\Support\Facades\Log::info("Pretended notification sending to {$channel}:{$to} with message: {$text}");
+        } else {
+            Notification::route($channel, $to)->notify($this->otp->content($text));
+        }
     }
 }

@@ -9,7 +9,6 @@ use AlexGeno\PhoneVerification\Sender\I as ISender;
 use AlexGeno\PhoneVerification\Storage\I as IStorage;
 use AlexGeno\PhoneVerificationLaravel\Commands\Complete;
 use AlexGeno\PhoneVerificationLaravel\Commands\Initiate;
-use AlexGeno\PhoneVerificationLaravel\Notifications\Otp;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\ServiceProvider;
@@ -25,7 +24,6 @@ class PhoneVerificationServiceProvider extends ServiceProvider
         $this->registerStorage();
         $this->registerSender();
         $this->registerManager();
-        $this->registerNotification();
         $this->registerPhoneVerification();
     }
 
@@ -63,7 +61,7 @@ class PhoneVerificationServiceProvider extends ServiceProvider
             $className = current($storage);
             $client = next($storage)();
 
-            return $container->make($className, ['client' => $client, 'config' => $config[$driver]]);
+            return new $className($client, $config[$driver]);
         });
     }
 
@@ -73,16 +71,9 @@ class PhoneVerificationServiceProvider extends ServiceProvider
             $driver = config('phone-verification.sender.driver');
             $senders = $this->senders();
 
-            return $container->make($senders[$driver]);
-        });
-    }
+            $className = $senders[$driver];
 
-    protected function registerNotification()
-    {
-        $this->app->bind(Otp::class, function ($container) {
-            $toLog = config('phone-verification.sender.to_log');
-
-            return new Otp($toLog);
+            return $container->make($className, ['toLog' => config('phone-verification.sender.to_log')]);
         });
     }
 

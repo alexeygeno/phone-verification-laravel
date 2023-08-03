@@ -37,7 +37,6 @@
         "laravel-notification-channels/messagebird": "^4.0",
         "laravel-notification-channels/twilio": "^3.3",
         "laravel/vonage-notification-channel": "^3.2",
-        "hotrush/laravel-log-notification-channel": "^0.4.0",
         "php-mock/php-mock-phpunit": "^2.7",
         "josiasmontag/laravel-redis-mock": "^1.3",
         "orchestra/testbench": "^7.25",

@@ -36,7 +36,7 @@ class SendersTest extends UnitTestCase
 
         Notification::fake();
 
-        app($sender)->invoke($to, $text);
+        app($sender, ['toLog' => false])->invoke($to, $text);
 
         Notification::assertSentOnDemand(Otp::class,
             function ($notification, array $channels, AnonymousNotifiable $notifiable) use ($channel, $text, $to) {

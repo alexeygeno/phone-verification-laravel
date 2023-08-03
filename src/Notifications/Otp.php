@@ -3,19 +3,10 @@
 namespace AlexGeno\PhoneVerificationLaravel\Notifications;
 
 use Illuminate\Notifications\Notification;
-use NotificationChannels\Log\LogChannel;
-use NotificationChannels\Log\LogMessage;
 
 class Otp extends Notification
 {
     protected string $content;
-
-    protected bool $toLog;
-
-    public function __construct(bool $toLog)
-    {
-        $this->toLog = $toLog;
-    }
 
     public function content(string $content)
     {
@@ -31,9 +22,7 @@ class Otp extends Notification
      */
     public function via(object $notifiable)
     {
-        return $this->toLog
-            ? [LogChannel::class]
-            : array_keys($notifiable->routes);
+        return array_keys($notifiable->routes);
     }
 
     /**
@@ -45,17 +34,5 @@ class Otp extends Notification
         if (str_starts_with($name, 'to') and count($args) == 1 and is_object(current($args))) {
             return $this->content;
         }
-    }
-
-    /**
-     * Get the log message representation of the notification.
-     *
-     * @return LogMessage
-     */
-    public function toLog(object $notifiable)
-    {
-        $route = current($notifiable->routes);
-
-        return new LogMessage("Pretended sms send to {$route}:. ".$notifiable->routeNotificationFor($route)." with message: {$this->content} ");
     }
 }
