@@ -1,5 +1,21 @@
 # Phone Verification Laravel  #
-Extensible and configurable Laravel library on top of [ alexeygeno/phone-verification-php ](https://github.com/alexeygeno/phone-verification-php)
+
+The usual way to sign in/sign up on a modern website or mobile app is:
+- A user initiates verification submitting a phone number
+- The user receives an sms or a call with an [ otp](https://en.wikipedia.org/wiki/One-time_password)
+- The user completes verification submitting the [ otp](https://en.wikipedia.org/wiki/One-time_password)
+
+This library is built on top of [ alexeygeno/phone-verification-php ](https://github.com/alexeygeno/phone-verification-php) allows to set this up.
+
+Among supported features: 
+ - Easy(.env) switching between different storages and notification channels
+ - Configurable length and expiration time for OTP 
+ - Configurable rate limits
+ - Localization
+ - Logging notifications instead of sending the real ones. Useful for non-production environments
+ - Usage with different Laravel approaches: [ Automatic injection ](https://laravel.com/docs/10.x/container#automatic-injection), [ facade ](https://laravel.com/docs/10.x/facades), [ commands ](https://laravel.com/docs/10.x/artisan#writing-commands)
+ - Routes out of the box for the quick start
+
 ## Requirements
 Laravel 9.x
 
@@ -13,7 +29,7 @@ composer require alexgeno/phone-verification-laravel predis/predis laravel/vonag
 **Note:** redis as a storage and vonage as a notification channel are defaults in config 
 
 ## Usage
-#### Type-hitting
+#### Automatic injection
 ```php
 public function initiate(\AlexGeno\PhoneVerification\Manager\Initiator $manager)
 {
@@ -54,7 +70,23 @@ curl -d "to=+380935259282&otp=1234" http://localhost/phone-verification/complete
 #{"ok":true,"message":"The verification is done!"}
 ```
 **Note**: The package routes are available by default. To make them unavailable without redefining the service provider just change the bool key **phone-verification.sender.to_log** in config
-##Configuration
+
+## Different storages and notification channels
+To switch between [ available ](#Requirements) storages and notifications channels you need only to install the respective package and change .env.
+
+For instance if you need **mongodb** as a storage and **twilio** as a notification channel just do this:
+```shell
+composer require jenssegers/laravel-mongodb laravel-notification-channels/twilio
+```
+```dotenv
+PHONE_VERIFICATION_SENDER=twilio
+PHONE_VERIFICATION_STORAGE=mongodb
+```
+If what's available is not enough you can redefine the service provider and add a storage (implementing *\AlexGeno\PhoneVerification\Storage\I*) or/and a sender (implementing \AlexGeno\PhoneVerification\Sender\I)
+
+
+
+## Configuration
 ```php
 [
     'storage' => [
@@ -101,7 +133,7 @@ curl -d "to=+380935259282&otp=1234" http://localhost/phone-verification/complete
 ```
 
 
-##Publishing
+## Publishing
 #### Config
 ```shell
 php artisan vendor:publish --tag=phone-verification-config
@@ -115,20 +147,6 @@ php artisan vendor:publish --tag=phone-verification-lang
 php artisan vendor:publish --tag=phone-verification-migrations
 ```
 **Note**: Only the mongodb storage driver needs migrations
-
-## Using different storages and notification channels
-To switch between [ available ](#Requirements) storages and notifications channels you need only to install the respective package and change .env.
-
-For instance if you need **mongodb** as a storage and **twilio** as a notification channel just do this:
-```shell
-composer require jenssegers/laravel-mongodb laravel-notification-channels/twilio
-```
-```dotenv
-PHONE_VERIFICATION_SENDER=twilio
-PHONE_VERIFICATION_STORAGE=mongodb
-```
-If what's available is not enough you can redefine the service provider and add a storage (implementing *\AlexGeno\PhoneVerification\Storage\I*) or/and a sender (implementing \AlexGeno\PhoneVerification\Sender\I)
-
 
 
 

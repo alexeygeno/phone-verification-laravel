@@ -5,7 +5,7 @@ return [
         'driver' => env('PHONE_VERIFICATION_STORAGE', 'redis'), // redis || mongodb
         'redis' => [
             'connection' => 'default',
-            // keys settings - normally you don't need to change it
+            // the key settings - normally you don't need to change them
             'settings' => [
                 'prefix' => 'pv:1',
                 'session_key' => 'session',
@@ -14,7 +14,7 @@ return [
         ],
         'mongodb' => [
             'connection' => 'mongodb',
-            // collections settings - normally you don't need to change it
+            // the collection settings - normally you don't need to change them
             'settings' => [
                 'collection_session' => 'session',
                 'collection_session_counter' => 'session_counter',
