@@ -36,7 +36,7 @@ class PhoneVerificationServiceProvider extends ServiceProvider
 
     protected function storages()
     {
-        return [ // storage class name, array of constructor params for the class
+        return [ // storage class name, the array of constructor params a for the class
             'redis' => [
                 \AlexGeno\PhoneVerification\Storage\Redis::class,
                 fn (array $config):array => [ Redis::connection($config['connection'])->client(), $config['settings'] ],
