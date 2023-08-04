@@ -146,6 +146,9 @@ class PhoneVerificationServiceProvider extends ServiceProvider
 
     protected function bootMigrations()
     {
-        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+        // Only the mongodb driver needs migrations
+        if(config('phone-verification.storage.driver') === 'mongodb') {
+            $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
+        }
     }
 }
