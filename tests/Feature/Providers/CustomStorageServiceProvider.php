@@ -10,6 +10,11 @@ class CustomStorageServiceProvider extends PhoneVerificationServiceProvider
     {
         return
             parent::storages() +
-            ['foo' => [\AlexGeno\PhoneVerificationLaravel\Tests\Fixtures\Storages\Foo::class, fn () => new \StdClass]]; // StdClass emulates a client for the Foo storage
+            [
+                'foo' => [
+                    \AlexGeno\PhoneVerificationLaravel\Tests\Fixtures\Storages\Foo::class,
+                    fn (array $config):array => [ new \StdClass, $config['settings']] // StdClass emulates a client for the Foo storage
+                ]
+            ];
     }
 }

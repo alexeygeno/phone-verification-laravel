@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Notification;
 
 class SendersTest extends UnitTestCase
 {
-    public function drivers()
+    public function channels()
     {
         return [
             ['messagebird'],
@@ -19,26 +19,26 @@ class SendersTest extends UnitTestCase
     }
 
     /**
-     * @dataProvider drivers
+     * @dataProvider channels
      */
-    public function test_notification_invocation_ok($driver)
+    public function test_notification_invocation_ok($channel)
     {
         $text = 'Test text';
         $to = '+15417543010';
-        config(['phone-verification.sender.driver' => $driver]);
+        config(['phone-verification.sender.channel' => $channel]);
 
         Notification::fake();
 
         app(ISender::class)->invoke($to, $text);
 
         Notification::assertSentOnDemand(Otp::class,
-            function ($notification, array $channels, AnonymousNotifiable $notifiable) use ($text, $to, $driver) {
-                $toMethod = 'to'.ucfirst($driver);
+            function ($notification, array $channels, AnonymousNotifiable $notifiable) use ($text, $to, $channel) {
+                $toMethod = 'to'.ucfirst($channel);
 
-                return count($channels) == 1 && current($channels) === $driver &&
+                return count($channels) == 1 && current($channels) === $channel &&
                     $notification->$toMethod($notifiable) == $text &&
                     $notification->via($notifiable) == $channels &&
-                    $notifiable->routeNotificationFor($driver) == $to;
+                    $notifiable->routeNotificationFor($channel) == $to;
             }
         );
     }

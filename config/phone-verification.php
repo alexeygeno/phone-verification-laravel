@@ -4,18 +4,26 @@ return [
     'storage' => [
         'driver' => env('PHONE_VERIFICATION_STORAGE', 'redis'), // redis || mongodb
         'redis' => [
-            'prefix' => 'pv:1',
-            'session_key' => 'session',
-            'session_counter_key' => 'session_counter',
+            'connection' => 'default',
+            // keys settings - normally you don't need to change it
+            'settings' => [
+                'prefix' => 'pv:1',
+                'session_key' => 'session',
+                'session_counter_key' => 'session_counter',
+            ],
         ],
         'mongodb' => [
-            'db' => 'phone_verification',
-            'collection_session' => 'session',
-            'collection_session_counter' => 'session_counter',
+            'connection' => 'mongodb',
+            // collections settings - normally you don't need to change it
+            'settings' => [
+                'collection_session' => 'session',
+                'collection_session_counter' => 'session_counter',
+            ],
         ],
     ],
     'sender' => [
-        'driver' => env('PHONE_VERIFICATION_SENDER', 'vonage'), // vonage || twilio || messagebird
+        // vonage || twilio || messagebird and many more https://github.com/laravel-notification-channels
+        'channel' => env('PHONE_VERIFICATION_SENDER', 'vonage'),
         'to_log' => false, // if enabled: instead of sending a real notification, debug it to the app log
     ],
     'routes' => true, // managing the availability of the package routes without redefining the service provider
@@ -27,7 +35,7 @@ return [
                 'count' => 10,
             ],
             'complete' => [ // for every 'to' no more than 5 failed completion over 5 minutes
-                'period_secs' => 300, // this is also the maximum period(since the initiation) to complete
+                'period_secs' => 300, // this is also the expiration period for an otp
                 'count' => 5,
             ],
         ],

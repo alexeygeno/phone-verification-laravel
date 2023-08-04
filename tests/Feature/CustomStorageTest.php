@@ -15,8 +15,11 @@ class CustomStorageTest extends FeatureTestCase
             ['phone-verification.storage' => [
                 'driver' => 'foo',
                 'foo' => [
-                    'setting1' => 'val1',
-                    'setting2' => 'val2',
+                    'connection' => 'foo_connection',
+                    'settings' => [
+                        'setting1' => 'val1',
+                        'setting2' => 'val2',
+                    ]
                 ],
             ],
             ]

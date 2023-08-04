@@ -36,9 +36,20 @@ class PhoneVerificationServiceProvider extends ServiceProvider
 
     protected function storages()
     {
-        return [ // storageClass, clientCallback
-            'redis' => [\AlexGeno\PhoneVerification\Storage\Redis::class, fn () => Redis::connection()->client()],
-            'mongodb' => [\AlexGeno\PhoneVerification\Storage\MongoDb::class, fn () => DB::connection('mongodb')->getMongoClient()],
+        return [ // storage class name, array of constructor params for the class
+            'redis' => [
+                \AlexGeno\PhoneVerification\Storage\Redis::class,
+                fn (array $config):array => [ Redis::connection($config['connection'])->client(), $config['settings'] ],
+            ],
+            'mongodb' => [
+                \AlexGeno\PhoneVerification\Storage\MongoDb::class,
+                function (array $config):array {
+                    $connection = DB::connection($config['connection']);
+                    $config['settings']['db'] = $connection->getDatabaseName();
+
+                    return [ $connection->getMongoClient(), $config['settings'] ];
+                },
+            ],
         ];
     }
 
@@ -47,18 +58,18 @@ class PhoneVerificationServiceProvider extends ServiceProvider
         $this->app->bind(IStorage::class, function ($container) {
             $config = config('phone-verification.storage');
             $driver = $config['driver'];
-            $storages = $this->storages();
-            $storage = $storages[$driver];
-            $className = current($storage);
-            $client = next($storage)();
+            $storage = $this->storages()[$driver];
 
-            return new $className($client, $config[$driver]);
+            $className = current($storage);
+            $params = next($storage)($config[$driver]);
+
+            return new $className(...$params);
         });
     }
 
     protected function registerSender()
     {
-        $this->app->when(Sender::class)->needs('$channel')->giveConfig('phone-verification.sender.driver');
+        $this->app->when(Sender::class)->needs('$channel')->giveConfig('phone-verification.sender.channel');
         $this->app->when(Sender::class)->needs('$toLog')->giveConfig('phone-verification.sender.to_log');
         $this->app->bind(ISender::class, function ($container) {
             return $container->make(Sender::class);
@@ -147,8 +158,8 @@ class PhoneVerificationServiceProvider extends ServiceProvider
     protected function bootMigrations()
     {
         // Only the mongodb driver needs migrations
-        if(config('phone-verification.storage.driver') === 'mongodb') {
-            $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
+        if (config('phone-verification.storage.driver') === 'mongodb') {
+            $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
         }
     }
 }
