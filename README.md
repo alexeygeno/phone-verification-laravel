@@ -1,200 +1,134 @@
 # Phone Verification Laravel  #
-Extensible and configurable laravel library on top of https://github.com/alexeygeno/phone-verification-php
+Extensible and configurable Laravel library on top of [ alexeygeno/phone-verification-php ](https://github.com/alexeygeno/phone-verification-php)
 ## Requirements
 Laravel 9.x
 
-One of supported senders: 
+One of the Laravel notification channels: [ vonage ](https://github.com/laravel/vonage-notification-channel), [ twilio ](https://github.com/laravel-notification-channels/twilio), [ messagebird ](https://github.com/laravel-notification-channels/messagebird)  and [many more ](https://github.com/laravel-notification-channels?q=&type=all&language=php&sort=)
 
-One of supported storages:
+One of the supported storages: [ predis/predis ](https://github.com/predis/predis), [ jenssegers/laravel-mongodb ](https://github.com/jenssegers/laravel-mongodb)
 ## Installation
 ```shell
 composer require alexgeno/phone-verification-laravel predis/predis laravel/vonage-notification-channel
 ```
-**Note:** redis as a storage and vonage as a sender are defaults in config 
+**Note:** redis as a storage and vonage as a notification channel are defaults in config 
 
 ## Usage
-### The package routes
+#### Type-hitting
+```php
+public function initiate(\AlexGeno\PhoneVerification\Manager\Initiator $manager)
+{
+    $manager->initiate('+15417543010');
+}
+```
+```php
+public function complete(\AlexGeno\PhoneVerification\Manager\Completer $manager)
+{
+    $manager->complete('+15417543010', 1234);
+}
+```
+#### Facade
+```php
+use \AlexGeno\PhoneVerificationLaravel\Facades\PhoneVerification;
+
+PhoneVerification::initiate('+15417543010');
+```
+```php
+use \AlexGeno\PhoneVerificationLaravel\Facades\PhoneVerification;
+
+PhoneVerification::complete('+15417543010', 1234);
+```
+#### Commands
+```shell
+php artisan phone-verification:initiate --to=+15417543010
+```
+```shell
+php artisan phone-verification:complete --to=+15417543010 --otp=1234
+```
+#### Routes
 ```shell
 curl -d "to=+380935259282" http://localhost/phone-verification/initiate
 #{"ok":true,"message":"Sms has been sent. Check your Phone!"}
 ```
 ```shell
-curl -d "to=+380935259282&otp=8756" http://localhost/phone-verification/complete
+curl -d "to=+380935259282&otp=1234" http://localhost/phone-verification/complete
 #{"ok":true,"message":"The verification is done!"}
 ```
-### Type-hitting
-### Facade
-### Commands
-
+**Note**: The package routes are available by default. To make them unavailable without redefining the service provider just change the bool key **phone-verification.sender.to_log** in config
 ##Configuration
+```php
+[
+    'storage' => [
+        'driver' => env('PHONE_VERIFICATION_STORAGE', 'redis'), // redis || mongodb
+        'redis' => [
+            'connection' => 'default',
+            // keys settings - normally you don't need to change it
+            'settings' => [
+                'prefix' => 'pv:1',
+                'session_key' => 'session',
+                'session_counter_key' => 'session_counter',
+            ],
+        ],
+        'mongodb' => [
+            'connection' => 'mongodb',
+            // collections settings - normally you don't need to change it
+            'settings' => [
+                'collection_session' => 'session',
+                'collection_session_counter' => 'session_counter',
+            ],
+        ],
+    ],
+    'sender' => [
+        // vonage || twilio || messagebird and many more https://github.com/laravel-notification-channels
+        'channel' => env('PHONE_VERIFICATION_SENDER', 'vonage'),
+        'to_log' => false, // if enabled: instead of sending a real notification, debug it to the app log
+    ],
+    'routes' => true, // managing the availability of the package routes without redefining the service provider
+    'manager' => [
+        'otp' => ['length' => env('PHONE_VERIFICATION_OTP_LENGTH', 4)],
+        'rate_limits' => [
+            'initiate' => [ // for every 'to' no more than 10 initiations over 24 hours
+                'period_secs' => 86400,
+                'count' => 10,
+            ],
+            'complete' => [ // for every 'to' no more than 5 failed completion over 5 minutes
+                'period_secs' => 300, // this is also the expiration period for an otp
+                'count' => 5,
+            ],
+        ],
+    ],
+];
+
+```
 
 
 ##Publishing
+#### Config
 ```shell
 php artisan vendor:publish --tag=phone-verification-config
 ```
+#### Localization
 ```shell
 php artisan vendor:publish --tag=phone-verification-lang
 ```
-
-##Extending
-###To add a new storage:
-
-**Note:** if you don't understand what a storage is then take a look at [ the documentation of the base package ](https://github.com/alexeygeno/phone-verification-php/blob/master/README.md)
-1. Add a storage class implementing *AlexGeno\PhoneVerification\Storage\I*
-```php
-namespace App\Storages;
-
-class DynamoDb implements AlexGeno\PhoneVerification\Storage\I
-{ 
-    //...
-}
-```
-2. Extend the storage factory
-```php
-namespace App\Factories;
-
-class Storage extends AlexGeno\PhoneVerificationLaravel\Factories\Storage
-{
-
-    public function dynamodb()
-    {
-        return new \App\Storages\DynamoDb(/*...*/);
-    }
-}
-```
-3. Customize the storage factory class using the **customStorageFactory** method. This method should typically be called in the boot method of your AppServiceProvider class
-
-```php
-namespace App\Providers;
-
-use Illuminate\Support\ServiceProvider;
-use AlexGeno\PhoneVerificationLaravel\PhoneVerification;
-class AppServiceProvider extends ServiceProvider
-{
-    //...
-
-    /**
-     * Bootstrap any application services.
-     *
-     * @return void
-     */
-    public function boot()
-    {
-        //...
-        (new PhoneVerification)->storageFactory(\App\Factories\Storage::class);
-        //...
-    }
-}
-```
-4. Finally, put the new storage name into *config/phone-verification.php*
-```php
-return [
-//...
-    'storage' => 'dynamodb'
-//...
-];
-```
-###To add a new sender(using a laravel notification channel):
-**Note:** if you don't understand what a sender is then take a look at [ the documentation of the base package ](https://github.com/alexeygeno/phone-verification-php/blob/master/README.md)
-
-1. Install a package
+#### Migrations
 ```shell
-composer require laravel-notification-channels/vodafone
+php artisan vendor:publish --tag=phone-verification-migrations
 ```
-2. Add a notification class
+**Note**: Only the mongodb storage driver needs migrations
 
-```php
-namespace App\Notifications;
+## Using different storages and notification channels
+To switch between [ available ](#Requirements) storages and notifications channels you need only to install the respective package and change .env.
 
-use AlexGeno\PhoneVerificationLaravel\Notifications\Otp;
-use NotificationChannels\Vodafone\VodafoneChannel;
-use NotificationChannels\Vodafone\VodafoneMessage;
-
-class Vodafone extends Otp
-{ 
-    protected function channel():string
-    {
-        return VodafoneChannel::class;
-    }
-
-    public function toVodafone($notifiable):VodafoneMessage
-    {
-        return (new VodafoneMessage)->content($this->text);
-    }
-}
-```
-3. Add a sender class implementing *AlexGeno\PhoneVerification\Sender\I*
-```php
-
-namespace App\Senders;
-
-use AlexGeno\PhoneVerification\Sender\I;
-
-use Illuminate\Support\Facades\Notification;
-
-class Vodafone implements I {
-
-    public function invoke(string $to, string $text)
-    {
-        Notification::route('vodafone', $to)->notify(new \App\Notifications\Vodafone($text));
-    }
-}
-
-```
-4. Extend the sender factory
-```php
-namespace App\Factories;
-
-class Sender extends AlexGeno\PhoneVerificationLaravel\Factories\Sender
-{
-
-    public function vodafone()
-    {
-        return new \App\Senders\Vodafone();
-    }
-}
-```
-5. Customize the sender factory class using the **customSenderFactory** method. This method should typically be called in the boot method of your AppServiceProvider class
-
-```php
-namespace App\Providers;
-
-use Illuminate\Support\ServiceProvider;
-use AlexGeno\PhoneVerificationLaravel\PhoneVerification;
-class AppServiceProvider extends ServiceProvider
-{
-    //...
-
-    /**
-     * Bootstrap any application services.
-     *
-     * @return void
-     */
-    public function boot()
-    {
-        //...
-        (new PhoneVerification)->storageFactory(\App\Factories\Sender::class);
-        //...
-    }
-}
-```
-6. Finally, put the new sender name into *config/phone-verification.php*
-```php
-return [
-//...
-    'sender' => 'vodafone'
-//...
-];
-```
-
-##Tests
-
+For instance if you need **mongodb** as a storage and **twilio** as a notification channel just do this:
 ```shell
-vendor/bin/testbench package:test  --filter 'AlexGeno\\PhoneVerificationLaravel\\Tests\\Feature\\UseRoutesTest::test_initiation_ok'
+composer require jenssegers/laravel-mongodb laravel-notification-channels/twilio
 ```
+```dotenv
+PHONE_VERIFICATION_SENDER=twilio
+PHONE_VERIFICATION_STORAGE=mongodb
+```
+If what's available is not enough you can redefine the service provider and add a storage (implementing *\AlexGeno\PhoneVerification\Storage\I*) or/and a sender (implementing \AlexGeno\PhoneVerification\Sender\I)
 
-```shell
-vendor/bin/testbench package:test --coverage
-```
+
+
 
