@@ -1,18 +1,33 @@
-# UNDER DEVELOPMENT
+# Phone Verification Laravel  #
+Extensible and configurable laravel library on top of https://github.com/alexeygeno/phone-verification-php
+## Requirements
+Laravel 9.x
 
-## Quick start
+One of supported senders: 
 
-Initiate
+One of supported storages:
+## Installation
+```shell
+composer require alexgeno/phone-verification-laravel predis/predis laravel/vonage-notification-channel
+```
+**Note:** redis as a storage and vonage as a sender are defaults in config 
+
+## Usage
+### The package routes
 ```shell
 curl -d "to=+380935259282" http://localhost/phone-verification/initiate
-{"ok":true,"message":"Sms has been sent. Check your Phone!"}
+#{"ok":true,"message":"Sms has been sent. Check your Phone!"}
 ```
-
-Complete
 ```shell
 curl -d "to=+380935259282&otp=8756" http://localhost/phone-verification/complete
-{"ok":true,"message":"The verification is done!"}
+#{"ok":true,"message":"The verification is done!"}
 ```
+### Type-hitting
+### Facade
+### Commands
+
+##Configuration
+
 
 ##Publishing
 ```shell

@@ -42,15 +42,6 @@ class PhoneVerificationServiceProvider extends ServiceProvider
         ];
     }
 
-    protected function senders()
-    {
-        return [
-            'vonage' => \AlexGeno\PhoneVerificationLaravel\Senders\Vonage::class,
-            'twilio' => \AlexGeno\PhoneVerificationLaravel\Senders\Twilio::class,
-            'messagebird' => \AlexGeno\PhoneVerificationLaravel\Senders\Messagebird::class,
-        ];
-    }
-
     protected function registerStorage()
     {
         $this->app->bind(IStorage::class, function ($container) {
@@ -67,13 +58,10 @@ class PhoneVerificationServiceProvider extends ServiceProvider
 
     protected function registerSender()
     {
+        $this->app->when(Sender::class)->needs('$channel')->giveConfig('phone-verification.sender.driver');
+        $this->app->when(Sender::class)->needs('$toLog')->giveConfig('phone-verification.sender.to_log');
         $this->app->bind(ISender::class, function ($container) {
-            $driver = config('phone-verification.sender.driver');
-            $senders = $this->senders();
-
-            $className = $senders[$driver];
-
-            return $container->make($className, ['toLog' => config('phone-verification.sender.to_log')]);
+            return $container->make(Sender::class);
         });
     }
 
@@ -95,7 +83,7 @@ class PhoneVerificationServiceProvider extends ServiceProvider
     {
         $this->app->bind(Initiator::class, function ($container) {
             return (new Manager($container->make(IStorage::class), $this->config()))
-                ->sender($container->make(ISender::class));
+                    ->sender($container->make(ISender::class));
         });
         $this->app->bind(Completer::class, function ($container) {
             return new Manager($container->make(IStorage::class), $this->config());

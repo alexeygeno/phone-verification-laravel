@@ -2,49 +2,43 @@
 
 namespace AlexGeno\PhoneVerificationLaravel\Tests\Unit;
 
+use AlexGeno\PhoneVerification\Sender\I as ISender;
 use AlexGeno\PhoneVerificationLaravel\Notifications\Otp;
 use Illuminate\Notifications\AnonymousNotifiable;
 use Illuminate\Support\Facades\Notification;
 
 class SendersTest extends UnitTestCase
 {
-    public function senders()
+    public function drivers()
     {
         return [
-            [
-                'messagebird',
-                \AlexGeno\PhoneVerificationLaravel\Senders\Messagebird::class,
-            ],
-            [
-                'vonage',
-                \AlexGeno\PhoneVerificationLaravel\Senders\Vonage::class,
-            ],
-            [
-                'twilio',
-                \AlexGeno\PhoneVerificationLaravel\Senders\Twilio::class,
-            ],
+            ['messagebird'],
+            ['vonage'],
+            ['twilio'],
         ];
     }
 
     /**
-     * @dataProvider senders
+     * @dataProvider drivers
      */
-    public function test_notification_invocation_ok($channel, $sender)
+    public function test_notification_invocation_ok($driver)
     {
         $text = 'Test text';
         $to = '+15417543010';
+        config(['phone-verification.sender.driver' => $driver]);
 
         Notification::fake();
 
-        app($sender, ['toLog' => false])->invoke($to, $text);
+        app(ISender::class)->invoke($to, $text);
 
         Notification::assertSentOnDemand(Otp::class,
-            function ($notification, array $channels, AnonymousNotifiable $notifiable) use ($channel, $text, $to) {
-                $toMethod = 'to'.ucfirst($channel);
+            function ($notification, array $channels, AnonymousNotifiable $notifiable) use ($text, $to, $driver) {
+                $toMethod = 'to'.ucfirst($driver);
 
-                return $notification->$toMethod($notifiable) == $text &&
-                    $notification->via($notifiable) == [$channel] &&
-                    $notifiable->routeNotificationFor($channel) == $to;
+                return count($channels) == 1 && current($channels) === $driver &&
+                    $notification->$toMethod($notifiable) == $text &&
+                    $notification->via($notifiable) == $channels &&
+                    $notifiable->routeNotificationFor($driver) == $to;
             }
         );
     }
