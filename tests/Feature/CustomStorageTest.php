@@ -19,7 +19,7 @@ class CustomStorageTest extends FeatureTestCase
                     'settings' => [
                         'setting1' => 'val1',
                         'setting2' => 'val2',
-                    ]
+                    ],
                 ],
             ],
             ]
