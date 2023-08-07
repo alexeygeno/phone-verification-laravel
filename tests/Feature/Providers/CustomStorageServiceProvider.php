@@ -6,6 +6,9 @@ use AlexGeno\PhoneVerificationLaravel\PhoneVerificationServiceProvider;
 
 class CustomStorageServiceProvider extends PhoneVerificationServiceProvider
 {
+    /**
+     * {@inheritdoc}
+     */
     protected function storages()
     {
         return

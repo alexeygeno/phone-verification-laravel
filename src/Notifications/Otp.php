@@ -8,6 +8,11 @@ class Otp extends Notification
 {
     protected string $content;
 
+    /**
+     * Set content for the OTP notification.
+     *
+     * @return $this
+     */
     public function content(string $content)
     {
         $this->content = $content;
@@ -18,7 +23,7 @@ class Otp extends Notification
     /**
      * Get the notification's delivery channels.
      *
-     * @return array
+     * @return array<string>
      */
     public function via(object $notifiable)
     {
@@ -26,8 +31,11 @@ class Otp extends Notification
     }
 
     /**
-     * Returns $this->content for the methods: toMessagebird, toTwilio, toVonage, ...
-     * If you need custom behaviour just add the "to{Driver}" method to this class
+     * Return content for the methods: toMessagebird, toTwilio, toVonage, ...
+     * If you need custom behaviour just add the "to{Driver}" method.
+     *
+     * @param  array<mixed>  $args
+     * @return string|mixed
      */
     public function __call(string $name, array $args)
     {

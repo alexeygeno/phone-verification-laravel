@@ -8,6 +8,11 @@ use AlexGeno\PhoneVerificationLaravel\Tests\Fixtures\Senders\Foo;
 
 class CustomSenderServiceProvider extends PhoneVerificationServiceProvider
 {
+    /**
+     * Register Foo as a sender
+     *
+     * return void
+     */
     protected function registerSender()
     {
         $this->app->bind(ISender::class, function ($container) {

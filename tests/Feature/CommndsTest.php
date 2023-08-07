@@ -9,12 +9,16 @@ class CommandsTest extends FeatureTestCase
     use PHPMock;
 
     /**
+     * Test verification process using artisan commands
+     *
      * @runInSeparateProcess
      *
      * @preserveGlobalState disabled
      *
      * @see https://github.com/php-mock/php-mock-phpunit#restrictions
      * @see https://github.com/orchestral/testbench/issues/371#issuecomment-1649239817
+     *
+     * @return void
      */
     public function test_process_ok()
     {

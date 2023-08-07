@@ -6,6 +6,9 @@ use AlexGeno\PhoneVerificationLaravel\Tests\TestCase;
 
 abstract class UnitTestCase extends TestCase
 {
+    /**
+     * {@inheritdoc}
+     */
     protected function getEnvironmentSetUp($app)
     {
         parent::getEnvironmentSetUp($app);

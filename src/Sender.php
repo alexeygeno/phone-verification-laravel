@@ -14,6 +14,9 @@ class Sender implements I
 
     protected bool $toLog;
 
+    /**
+     * Sender constructor.
+     */
     public function __construct(Otp $otp, string $channel, bool $toLog)
     {
         $this->otp = $otp;
@@ -21,12 +24,18 @@ class Sender implements I
         $this->toLog = $toLog;
     }
 
+    /**
+     * Invoke the process of sending.
+     *
+     * @return mixed|void
+     */
     public function invoke(string $to, string $text)
     {
-        if ($this->toLog) {
-            \Illuminate\Support\Facades\Log::info("Pretended notification sending to {$this->channel}:{$to} with message: {$text}");
-        } else {
-            Notification::route($this->channel, $to)->notify($this->otp->content($text));
-        }
+        return
+            $this->toLog
+            ?
+                \Illuminate\Support\Facades\Log::info("Pretended notification sending to {$this->channel}:{$to} with message: {$text}")
+            :
+                Notification::route($this->channel, $to)->notify($this->otp->content($text));
     }
 }

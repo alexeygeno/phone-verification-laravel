@@ -9,6 +9,11 @@ class CustomStorageTest extends FeatureTestCase
 {
     protected string $serviceProvider = CustomStorageServiceProvider::class;
 
+    /**
+     * Tests if custom storage is resolved properly for the storage interface
+     *
+     * @return void
+     */
     public function test_custom_storage_available()
     {
         config(

@@ -5,4 +5,4 @@ parameters:
     - routes
     - src
     - tests
-  level: 0
+  level: 6

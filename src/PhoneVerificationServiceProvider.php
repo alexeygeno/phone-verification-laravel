@@ -16,7 +16,7 @@ use Illuminate\Support\ServiceProvider;
 class PhoneVerificationServiceProvider extends ServiceProvider
 {
     /**
-     * Register services.
+     * Register the package's services.
      */
     public function register()
     {
@@ -27,6 +27,11 @@ class PhoneVerificationServiceProvider extends ServiceProvider
         $this->registerPhoneVerification();
     }
 
+    /**
+     * Register a singleton for PhoneVerification.
+     *
+     * @return void
+     */
     protected function registerPhoneVerification()
     {
         $this->app->singleton(PhoneVerification::class, function ($container) {
@@ -34,16 +39,27 @@ class PhoneVerificationServiceProvider extends ServiceProvider
         });
     }
 
+    /**
+     * Return registration info for storages.
+     *
+     * @return array<mixed>[
+     *           'redis' => [\AlexGeno\PhoneVerification\Storage\Redis::class, \Closure],
+     *           'mongodb' => [\AlexGeno\PhoneVerification\Storage\MongoDb::class, \Closure]
+     * ]
+     */
     protected function storages()
     {
-        return [ // storage class name, the array of constructor params a for the class
+        return [
             'redis' => [
-                \AlexGeno\PhoneVerification\Storage\Redis::class,
-                fn (array $config): array => [Redis::connection($config['connection'])->client(), $config['settings']],
+                \AlexGeno\PhoneVerification\Storage\Redis::class, // storage class name
+                fn (array $config): array => [Redis::connection($config['connection'])->client(), $config['settings']], // params for the constructor
             ],
             'mongodb' => [
-                \AlexGeno\PhoneVerification\Storage\MongoDb::class,
-                function (array $config): array {
+                \AlexGeno\PhoneVerification\Storage\MongoDb::class, // storage class name
+                function (array $config): array {  // params for the constructor
+                    /**
+                     * @var \Jenssegers\Mongodb\Connection
+                     */
                     $connection = DB::connection($config['connection']);
                     $config['settings']['db'] = $connection->getDatabaseName();
 
@@ -53,6 +69,14 @@ class PhoneVerificationServiceProvider extends ServiceProvider
         ];
     }
 
+    /**
+     * Register a storage using the config setting.
+     *
+     * @see storages()
+     * @see \AlexGeno\PhoneVerification\Storage\I
+     *
+     * @return void
+     */
     protected function registerStorage()
     {
         $this->app->bind(IStorage::class, function ($container) {
@@ -67,6 +91,14 @@ class PhoneVerificationServiceProvider extends ServiceProvider
         });
     }
 
+    /**
+     * Register Sender using config settings.
+     *
+     * @see \AlexGeno\PhoneVerificationLaravel\Sender
+     * @see \AlexGeno\PhoneVerification\Sender\I
+     *
+     * @return void
+     */
     protected function registerSender()
     {
         $this->app->when(Sender::class)->needs('$channel')->giveConfig('phone-verification.sender.channel');
@@ -76,7 +108,14 @@ class PhoneVerificationServiceProvider extends ServiceProvider
         });
     }
 
-    protected function config()
+    /**
+     * Build a config for Manager.
+     *
+     * @see \AlexGeno\PhoneVerification\Manager
+     *
+     * @return array<mixed>
+     */
+    protected function managerConfig()
     {
         $config = config('phone-verification.manager');
         // load translated messages
@@ -90,24 +129,42 @@ class PhoneVerificationServiceProvider extends ServiceProvider
         return $config;
     }
 
+    /**
+     * Register Manager.
+     *
+     * @see \AlexGeno\PhoneVerification\Manager
+     * @see \AlexGeno\PhoneVerification\Manager\Initiator
+     * @see \AlexGeno\PhoneVerification\Manager\Completer
+     *
+     * @return void
+     */
     protected function registerManager()
     {
+        // a sender and a storage for initiation process
         $this->app->bind(Initiator::class, function ($container) {
-            return (new Manager($container->make(IStorage::class), $this->config()))
-                    ->sender($container->make(ISender::class));
+            return (new Manager($container->make(IStorage::class), $this->managerConfig()))
+                ->sender($container->make(ISender::class));
         });
+        // only a storage for completion process
         $this->app->bind(Completer::class, function ($container) {
-            return new Manager($container->make(IStorage::class), $this->config());
+            return new Manager($container->make(IStorage::class), $this->managerConfig());
         });
     }
 
+    /**
+     * Register the package's config.
+     *
+     * @return void
+     */
     protected function registerConfig()
     {
         $this->mergeConfigFrom(__DIR__.'/../config/phone-verification.php', 'phone-verification');
     }
 
     /**
-     * Bootstrap services.
+     * Bootstrap the package's services.
+     *
+     * @return void
      */
     public function boot()
     {
@@ -118,6 +175,11 @@ class PhoneVerificationServiceProvider extends ServiceProvider
         $this->bootCommands();
     }
 
+    /**
+     * Boot the package's publishable resources.
+     *
+     * @return void
+     */
     protected function bootPublishing()
     {
         if ($this->app->runningInConsole()) {
@@ -133,6 +195,11 @@ class PhoneVerificationServiceProvider extends ServiceProvider
         }
     }
 
+    /**
+     * Boot the package's commands.
+     *
+     * @return void
+     */
     protected function bootCommands()
     {
         if ($this->app->runningInConsole()) {
@@ -143,6 +210,11 @@ class PhoneVerificationServiceProvider extends ServiceProvider
         }
     }
 
+    /**
+     * Boot the package's routes.
+     *
+     * @return void
+     */
     protected function bootRoutes()
     {
         if (config('phone-verification.routes')) {
@@ -150,11 +222,21 @@ class PhoneVerificationServiceProvider extends ServiceProvider
         }
     }
 
+    /**
+     * Boot the package's translations.
+     *
+     * @return void
+     */
     protected function bootLang()
     {
         $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'phone-verification');
     }
 
+    /**
+     * Boot the package's migrations.
+     *
+     * @return void
+     */
     protected function bootMigrations()
     {
         // Only the mongodb driver needs migrations

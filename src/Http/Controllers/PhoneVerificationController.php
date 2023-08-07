@@ -10,6 +10,11 @@ use Illuminate\Routing\Controller;
 
 class PhoneVerificationController extends Controller
 {
+    /**
+     * Initiate phone verification process.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function initiate(Initiator $manager, Request $request)
     {
         $response = ['ok' => true, 'message' => trans('phone-verification::messages.initiation_success')];
@@ -24,6 +29,11 @@ class PhoneVerificationController extends Controller
         return response()->json($response, $status);
     }
 
+    /**
+     * Complete phone verification process.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function complete(Completer $manager, Request $request)
     {
         $response = ['ok' => true, 'message' => trans('phone-verification::messages.completion_success')];

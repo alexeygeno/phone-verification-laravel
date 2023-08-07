@@ -6,6 +6,11 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * Only mongodb migration.
+     *
+     * @var string
+     */
     protected $connection = 'mongodb';
 
     private string $collectionName;

@@ -10,6 +10,11 @@ use Illuminate\Support\Facades\Facade;
  */
 class PhoneVerification extends Facade
 {
+    /**
+     * Get the registered name of the component.
+     *
+     * @return string
+     */
     protected static function getFacadeAccessor()
     {
         return \AlexGeno\PhoneVerificationLaravel\PhoneVerification::class;

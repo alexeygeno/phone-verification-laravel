@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\Notification;
 
 class SendersTest extends UnitTestCase
 {
+    /**
+     * @return array<array<string>>
+     */
     public function channels()
     {
         return [
@@ -19,9 +22,15 @@ class SendersTest extends UnitTestCase
     }
 
     /**
+     * Test if notification facade was called properly for different channels
+     *
+     * @see https://laravel.com/docs/9.x/mocking#on-demand-notifications
+     *
      * @dataProvider channels
+     *
+     * @return void
      */
-    public function test_notification_invocation_ok($channel)
+    public function test_notification_invocation_ok(string $channel)
     {
         $text = 'Test text';
         $to = '+15417543010';
