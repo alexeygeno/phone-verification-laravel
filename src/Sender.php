@@ -27,15 +27,14 @@ class Sender implements I
     /**
      * Invoke the process of sending.
      *
-     * @return mixed|void
+     * @return void
      */
     public function invoke(string $to, string $text)
     {
-        return
-            $this->toLog
-            ?
-                \Illuminate\Support\Facades\Log::info("Pretended notification sending to {$this->channel}:{$to} with message: {$text}")
-            :
-                Notification::route($this->channel, $to)->notify($this->otp->content($text));
+        if ($this->toLog) {
+            \Illuminate\Support\Facades\Log::info("Pretended notification sending to {$this->channel}:{$to} with message: {$text}");
+        } else {
+            Notification::route($this->channel, $to)->notify($this->otp->content($text));
+        }
     }
 }
