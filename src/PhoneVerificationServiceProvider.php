@@ -56,7 +56,7 @@ class PhoneVerificationServiceProvider extends ServiceProvider
             ],
             'mongodb' => [
                 \AlexGeno\PhoneVerification\Storage\MongoDb::class, // storage class name
-                function (array $config): array {  // params for the constructor
+                function (array $config): array {
                     /**
                      * @var \Jenssegers\Mongodb\Connection
                      */
@@ -64,7 +64,7 @@ class PhoneVerificationServiceProvider extends ServiceProvider
                     $config['settings']['db'] = $connection->getDatabaseName();
 
                     return [$connection->getMongoClient(), $config['settings']];
-                },
+                }, // params for the constructor
             ],
         ];
     }
