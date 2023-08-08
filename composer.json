@@ -1,8 +1,21 @@
 {
     "name": "alexgeno/phone-verification-laravel",
-    "description":"An extensible and configurable php library to verify a phone",
+    "description":"A Laravel library to verify a phone via notification channels. Any notification channel can be used as a sender. Redis(predis) or MongoDb can be used a storage.",
     "type": "library",
+    "keywords":["otp","phone", "verification", "verify", "sms", "call", "2fa", "2factor","authentication", "signin",
+        "signup", "redis", "mongo", "mongodb", "verify-by-phone", "otp", "notification", "notification-channel",
+        "twilio", "messagebird", "vonage", "touch-sms", "clickatell", "jusibe", "smsc-ru", "authy", "cmsms", "46elks",
+        "sipgate", "all-my-sms", "smspoh", "turbosms", "vodafone", "africastalking", "sms77", "smsapi", "sms-broadcast"
+    ],
     "license": "MIT",
+    "authors": [
+        {
+            "name": "Alexey Geno",
+            "email": "alexeygeno@gmail.com",
+            "homepage":"https://github.com/alexeygeno"
+        }
+    ],
+    "homepage": "https://github.com/alexeygeno/phone-verification-laravel",
     "autoload": {
         "psr-4": {
             "AlexGeno\\PhoneVerificationLaravel\\": "src/"
@@ -20,16 +33,16 @@
             ]
         }
     },
-    "authors": [
-        {
-            "name": "Alexey Geno",
-            "email": "alexeygeno@gmail.com",
-            "homepage":"https://github.com/alexeygeno"
-        }
-    ],
     "require": {
         "php":"^8.0",
         "alexgeno/phone-verification": "^1.0"
+    },
+    "suggest": {
+        "predis/predis": "required to use Redis as a storage",
+        "enssegers/mongodb": "required to use MongoDB as a storage",
+        "laravel-notification-channels/messagebird": "required to use Messagebird as a sender's notification channel",
+        "laravel-notification-channels/twilio": "required to use Twilio as a sender's notification channel",
+        "laravel/vonage-notification-channel": "required to use Vonage as a sender's notification channel"
     },
     "require-dev": {
         "jenssegers/mongodb": "^3.9",
@@ -43,5 +56,10 @@
         "nunomaduro/collision": "^6.2",
         "laravel/pint": "^1.5",
         "phpstan/phpstan": "^1.10"
-    }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }

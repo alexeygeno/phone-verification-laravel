@@ -34,8 +34,8 @@ return [
                 'period_secs' => 86400,
                 'count' => 10,
             ],
-            'complete' => [ // for every 'to' no more than 5 failed completion over 5 minutes
-                'period_secs' => 300, // this is also the expiration period for otp
+            'complete' => [ // for every 'to' no more than 5 failed completions over 5 minutes
+                'period_secs' => 300, // this is also the expiration period for OTP
                 'count' => 5,
             ],
         ],
