@@ -21,7 +21,7 @@ return new class extends Migration
     }
 
     /**
-     * Run the migrations.
+     * The name of the database connection to use.
      *
      * @return void
      */

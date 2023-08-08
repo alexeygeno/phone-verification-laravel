@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * Only mongodb migration.
+     * The name of the database connection to use.
      *
      * @var string
      */

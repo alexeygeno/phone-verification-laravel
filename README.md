@@ -1,7 +1,8 @@
 # Phone Verification via [Laravel Notification Channels](https://laravel-notification-channels.com/)
 
-[![Build Status](https://github.com/alexeygeno/phone-verification-laravel/workflows/tests/badge.svg)](https://github.com/alexeygeno/phone-verification-laravel/actions)
-[![Build Status](https://github.com/alexeygeno/phone-verification-laravel/workflows/pint/badge.svg)](https://github.com/alexeygeno/phone-verification-php/actions)
+[![Build Status](https://github.com/alexeygeno/phone-verification-laravel/workflows/Tests/badge.svg)](https://github.com/alexeygeno/phone-verification-laravel/actions)
+[![Build Status](https://github.com/alexeygeno/phone-verification-laravel/workflows/Pint/badge.svg)](https://github.com/alexeygeno/phone-verification-php/actions)
+[![Build Status](https://github.com/alexeygeno/phone-verification-laravel/workflows/PHPStan/badge.svg)](https://github.com/alexeygeno/phone-verification-php/actions)
 [![Coverage Status](https://coveralls.io/repos/github/alexeygeno/phone-verification-laravel/badge.svg)](https://coveralls.io/github/alexeygeno/phone-verification-laravel)
 
 

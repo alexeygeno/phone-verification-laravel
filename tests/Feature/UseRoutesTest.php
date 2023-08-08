@@ -11,7 +11,7 @@ class UseRoutesTest extends FeatureTestCase
     protected const LANG_MESSAGES = 'phone-verification::messages.';
 
     /**
-     * Tests the route phone-verification/initiate
+     * Test the route phone-verification/initiate
      *
      * @return void
      */
@@ -25,7 +25,7 @@ class UseRoutesTest extends FeatureTestCase
     }
 
     /**
-     * Tests the initiation rate limit
+     * Test the initiation rate limit
      *
      * @return void
      */
@@ -69,7 +69,7 @@ class UseRoutesTest extends FeatureTestCase
     }
 
     /**
-     * Tests the completion rate limit
+     * Test the completion rate limit
      *
      * @return void
      */

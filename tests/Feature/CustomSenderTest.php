@@ -10,7 +10,7 @@ class CustomSenderTest extends FeatureTestCase
     protected string $serviceProvider = CustomSenderServiceProvider::class;
 
     /**
-     * Tests if custom sender is resolved properly for the sender interface
+     * If a custom sender is resolved properly for the sender interface
      *
      * @return void
      */

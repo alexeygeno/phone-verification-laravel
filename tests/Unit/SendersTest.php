@@ -22,7 +22,7 @@ class SendersTest extends UnitTestCase
     }
 
     /**
-     * Test if notification facade was called properly for different channels
+     * If notification facade was called properly for different channels
      *
      * @see https://laravel.com/docs/9.x/mocking#on-demand-notifications
      *
