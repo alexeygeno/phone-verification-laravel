@@ -13,7 +13,7 @@ Signing in or signing up on a modern website or mobile app typically follows the
 This library is built on top of [ alexeygeno/phone-verification-php ](https://github.com/alexeygeno/phone-verification-php) and allows to set this up
 
 Supported features: 
- - Easy(**.env**) switching between different storages and notification channels
+ - [Easy](#different-storages-and-notification-channels) switching between different storages and notification channels
  - Configurable length and expiration time for [OTP](https://en.wikipedia.org/wiki/One-time_password) 
  - Configurable rate limits
  - Localization
@@ -73,22 +73,28 @@ curl -d "to=+15417543010&otp=1234" localhost/phone-verification/complete
 **Note**: The package routes are available by default. To make them unavailable without redefining the service provider, change the bool key **phone-verification.sender.to_log** in the configuration
 
 ## Different storages and notification channels
-To switch between [available](#requirements) storages and notifications channels, install the respective package and update the **.env** file
+To switch between [available](#requirements) storages and notifications channels, install the respective package and update the configuration
 
 For example, to use **Mongodb** as a storage and **Twilio** as a notification channel:
 ```shell
 composer require jenssegers/mongodb laravel-notification-channels/twilio
 ```
-```dotenv
-PHONE_VERIFICATION_SENDER=twilio
-PHONE_VERIFICATION_STORAGE=mongodb
+```php
+[
+    'storage' => [
+        'driver' => 'mongodb', 
+    ],
+    'sender' => [
+        'channel' => \NotificationChannels\Twilio\TwilioChannel::class
+    ]
+]
 ```
 If the available options are not sufficient, you can redefine the service provider and add a custom storage (implementing **\AlexGeno\PhoneVerification\Storage\I**) or/and a sender (implementing **\AlexGeno\PhoneVerification\Sender\I**)
 ## Configuration
 ```php
 [
     'storage' => [
-        'driver' => env('PHONE_VERIFICATION_STORAGE', 'redis'), // redis || mongodb
+        'driver' => 'redis', // redis || mongodb
         'redis' => [
             'connection' => 'default',
             // the key settings - normally you don't need to change them
@@ -108,8 +114,12 @@ If the available options are not sufficient, you can redefine the service provid
         ],
     ],
     'sender' => [
-        // vonage || twilio || messagebird and many more https://github.com/laravel-notification-channels
-        'channel' => env('PHONE_VERIFICATION_SENDER', 'vonage'),
+        /**
+         * \Illuminate\Notifications\Channels\VonageSmsChannel::class || \NotificationChannels\Twilio\TwilioChannel::class || \NotificationChannels\Messagebird\MessagebirdChannel::class
+         *
+         * and many more https://github.com/laravel-notification-channels
+         */
+        'channel' => \Illuminate\Notifications\Channels\VonageSmsChannel::class,
         'to_log' => false, // if enabled: instead of sending a real notification, debug it to the app log
     ],
     'routes' => true, // managing the availability of the package routes without redefining the service provider
@@ -117,12 +127,12 @@ If the available options are not sufficient, you can redefine the service provid
         'otp' => ['length' => env('PHONE_VERIFICATION_OTP_LENGTH', 4)],
         'rate_limits' => [
             'initiate' => [ // for every 'to' no more than 10 initiations over 24 hours
-                'period_secs' => 86400,
-                'count' => 10,
+                'period_secs' => env('PHONE_VERIFICATION_RATE_LIMIT_INITIATE_PERIOD_SECS', 86400),
+                'count' => env('PHONE_VERIFICATION_RATE_LIMIT_INITIATE_COUNT', 10),
             ],
             'complete' => [ // for every 'to' no more than 5 failed completions over 5 minutes
-                'period_secs' => 300, // this is also the expiration period for OTP
-                'count' => 5,
+                'period_secs' => env('PHONE_VERIFICATION_RATE_LIMIT_COMPLETE_PERIOD_SECS', 300), // this is also the expiration period for OTP
+                'count' => env('PHONE_VERIFICATION_RATE_LIMIT_COMPLETE_COUNT', 5),
             ],
         ],
     ],

@@ -10,14 +10,14 @@ use Illuminate\Support\Facades\Notification;
 class SendersTest extends UnitTestCase
 {
     /**
-     * @return array<array<string>>
+     * @return array<int, array<int, string>>
      */
     public function channels()
     {
         return [
-            ['messagebird'],
-            ['vonage'],
-            ['twilio'],
+            ['messagebird', \NotificationChannels\Messagebird\MessagebirdChannel::class],
+            ['vonage', \Illuminate\Notifications\Channels\VonageSmsChannel::class],
+            ['twilio', \NotificationChannels\Twilio\TwilioChannel::class],
         ];
     }
 
@@ -30,24 +30,24 @@ class SendersTest extends UnitTestCase
      *
      * @return void
      */
-    public function test_notification_invocation_ok(string $channel)
+    public function test_notification_invocation_ok(string $channel, string $class)
     {
         $text = 'Test text';
         $to = '+15417543010';
-        config(['phone-verification.sender.channel' => $channel]);
+        config(['phone-verification.sender.channel' => $class]);
 
         Notification::fake();
 
         app(ISender::class)->invoke($to, $text);
 
         Notification::assertSentOnDemand(Otp::class,
-            function ($notification, array $channels, AnonymousNotifiable $notifiable) use ($text, $to, $channel) {
+            function ($notification, array $channels, AnonymousNotifiable $notifiable) use ($text, $to, $channel, $class) {
                 $toMethod = 'to'.ucfirst($channel);
 
-                return count($channels) == 1 && current($channels) === $channel &&
+                return count($channels) == 1 && current($channels) === $class &&
                     $notification->$toMethod($notifiable) == $text &&
-                    $notification->via($notifiable) == $channels &&
-                    $notifiable->routeNotificationFor($channel) == $to;
+                    $notification->via($notifiable) == [$class] &&
+                    $notifiable->routeNotificationFor($class) == $to;
             }
         );
     }
