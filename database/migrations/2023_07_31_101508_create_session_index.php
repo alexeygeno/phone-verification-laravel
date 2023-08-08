@@ -32,7 +32,7 @@ return new class extends Migration
             $collection->index(['id' => 1], 'id_unique_index', null, ['unique' => true]);
             /* @phpstan-ignore-next-line */
             $collection->index(['updated' => 1], 'updated_expiration_index', null,
-                ['expireAfterSeconds' => config('phone-verification.manager.rate_limits.initiate.period_secs')]
+                ['expireAfterSeconds' => config('phone-verification.manager.rate_limits.complete.period_secs')]
             );
         });
     }
