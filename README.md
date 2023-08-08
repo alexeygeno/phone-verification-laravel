@@ -63,11 +63,11 @@ php artisan phone-verification:complete --to=+15417543010 --otp=1234
 ```
 #### Routes
 ```shell
-curl -d "to=+380935259282" localhost/phone-verification/initiate
+curl -d "to=+15417543010" localhost/phone-verification/initiate
 #{"ok":true,"message":"Sms has been sent. Check your Phone!"}
 ```
 ```shell
-curl -d "to=+380935259282&otp=1234" localhost/phone-verification/complete
+curl -d "to=+15417543010&otp=1234" localhost/phone-verification/complete
 #{"ok":true,"message":"The verification is done!"}
 ```
 **Note**: The package routes are available by default. To make them unavailable without redefining the service provider, change the bool key **phone-verification.sender.to_log** in the configuration
@@ -77,7 +77,7 @@ To switch between [available](#requirements) storages and notifications channels
 
 For example, to use **Mongodb** as a storage and **Twilio** as a notification channel:
 ```shell
-composer require jenssegers/laravel-mongodb laravel-notification-channels/twilio
+composer require jenssegers/mongodb laravel-notification-channels/twilio
 ```
 ```dotenv
 PHONE_VERIFICATION_SENDER=twilio

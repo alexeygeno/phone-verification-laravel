@@ -2,7 +2,7 @@
     "name": "alexgeno/phone-verification-laravel",
     "description":"A Laravel library to verify a phone via notification channels. Any notification channel can be used as a sender. Redis(predis) or MongoDb can be used a storage.",
     "type": "library",
-    "keywords":["otp","phone", "verification", "verify", "sms", "call", "2fa", "2factor","authentication", "signin",
+    "keywords":["phone", "verification", "verify", "sms", "2fa", "2factor","authentication", "signin",
         "signup", "redis", "mongo", "mongodb", "verify-by-phone", "otp", "notification", "notification-channel",
         "twilio", "messagebird", "vonage", "touch-sms", "clickatell", "jusibe", "smsc-ru", "authy", "cmsms", "46elks",
         "sipgate", "all-my-sms", "smspoh", "turbosms", "vodafone", "africastalking", "sms77", "smsapi", "sms-broadcast"
@@ -39,7 +39,7 @@
     },
     "suggest": {
         "predis/predis": "required to use Redis as a storage",
-        "enssegers/mongodb": "required to use MongoDB as a storage",
+        "jenssegers/mongodb": "required to use MongoDB as a storage",
         "laravel-notification-channels/messagebird": "required to use Messagebird as a sender's notification channel",
         "laravel-notification-channels/twilio": "required to use Twilio as a sender's notification channel",
         "laravel/vonage-notification-channel": "required to use Vonage as a sender's notification channel"

@@ -17,7 +17,7 @@ return new class extends Migration
 
     public function __construct()
     {
-        $this->collectionName = config('phone-verification.storage.mongodb.collection_session');
+        $this->collectionName = config('phone-verification.storage.mongodb.settings.collection_session');
     }
 
     /**
