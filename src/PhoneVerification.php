@@ -5,9 +5,9 @@ namespace AlexGeno\PhoneVerificationLaravel;
 class PhoneVerification
 {
     /**
-     * Initiate phone verification process.
+     * Initiate verification process.
      *
-     * @return mixed
+     * @return  \AlexGeno\PhoneVerification\Manager\Initiator
      */
     public function initiate(string $to)
     {
@@ -15,7 +15,7 @@ class PhoneVerification
     }
 
     /**
-     * Complete phone verification process.
+     * Complete verification process.
      *
      * @return \AlexGeno\PhoneVerification\Manager\Completer
      */

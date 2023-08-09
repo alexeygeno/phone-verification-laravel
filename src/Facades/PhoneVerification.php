@@ -5,8 +5,8 @@ namespace AlexGeno\PhoneVerificationLaravel\Facades;
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @method static \AlexGeno\PhoneVerification\Manager initiate(string $to)
- * @method static \AlexGeno\PhoneVerification\Manager complete(string $to, int $otp)
+ * @method static \AlexGeno\PhoneVerification\Manager\Initiator initiate(string $to)
+ * @method static \AlexGeno\PhoneVerification\Manager\Completer complete(string $to, int $otp)
  */
 class PhoneVerification extends Facade
 {

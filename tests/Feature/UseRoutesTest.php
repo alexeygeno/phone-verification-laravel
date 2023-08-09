@@ -11,7 +11,7 @@ class UseRoutesTest extends FeatureTestCase
     protected const LANG_MESSAGES = 'phone-verification::messages.';
 
     /**
-     * Test the route phone-verification/initiate
+     * Test the 'phone-verification/initiate' route.
      *
      * @return void
      */
@@ -25,7 +25,7 @@ class UseRoutesTest extends FeatureTestCase
     }
 
     /**
-     * Test the initiation rate limit
+     * Test the initiation rate limit.
      *
      * @return void
      */
@@ -40,7 +40,7 @@ class UseRoutesTest extends FeatureTestCase
     }
 
     /**
-     * Test verification process using the routes
+     * Test verification process using the routes.
      *
      * @runInSeparateProcess
      *
@@ -69,7 +69,7 @@ class UseRoutesTest extends FeatureTestCase
     }
 
     /**
-     * Test the completion rate limit
+     * Test the completion rate limit.
      *
      * @return void
      */
@@ -84,7 +84,7 @@ class UseRoutesTest extends FeatureTestCase
     }
 
     /**
-     * Test verification process using the routes when OTP is incorrect
+     * Test verification process using the routes when OTP is incorrect.
      *
      * @return void
      */
@@ -104,13 +104,13 @@ class UseRoutesTest extends FeatureTestCase
     }
 
     /**
-     * Test verification process using the routes when OTP is expired
+     * Test verification process using the routes when OTP is expired.
      *
      * @return void
      */
     public function test_completion_otp_expired()
     {
-        // No initiation has the same behaviour as the initiation expiration - the key ain a storage just doesn't exist
+        // No initiation has the same behavior as the initiation expiration - the key just doesn't exist in a storage
         $expirationPeriodSecs = config('phone-verification.manager.rate_limits.complete.period_secs');
 
         $response = $this->postJson('/phone-verification/complete', ['to' => '+15417543010', 'otp' => 0]);

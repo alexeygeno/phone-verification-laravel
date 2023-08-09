@@ -10,17 +10,17 @@ class Sender implements I
 {
     protected Otp $otp;
 
-    protected string $channel;
+    protected string $driver;
 
     protected bool $toLog;
 
     /**
-     * Sender constructor.
+     * Constructor.
      */
-    public function __construct(Otp $otp, string $channel, bool $toLog)
+    public function __construct(Otp $otp, string $driver, bool $toLog)
     {
         $this->otp = $otp;
-        $this->channel = $channel;
+        $this->driver = $driver;
         $this->toLog = $toLog;
     }
 
@@ -32,9 +32,9 @@ class Sender implements I
     public function invoke(string $to, string $text)
     {
         if ($this->toLog) {
-            \Illuminate\Support\Facades\Log::info("Pretended notification sending to {$this->channel}:{$to} with message: {$text}");
+            \Illuminate\Support\Facades\Log::info("Pretended notification sending to {$this->driver}:{$to} with message: {$text}");
         } else {
-            Notification::route($this->channel, $to)->notify($this->otp->content($text));
+            Notification::route($this->driver, $to)->notify($this->otp->content($text));
         }
     }
 }

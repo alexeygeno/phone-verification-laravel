@@ -3,10 +3,18 @@
 namespace AlexGeno\PhoneVerificationLaravel\Notifications;
 
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Str;
 
 class Otp extends Notification
 {
     protected string $content;
+
+    protected string $channel;
+
+    public function __construct(string $channel)
+    {
+        $this->channel = $channel;
+    }
 
     /**
      * Set content for the OTP notification.
@@ -27,7 +35,7 @@ class Otp extends Notification
      */
     public function via(object $notifiable)
     {
-        return array_keys($notifiable->routes);
+        return [$this->channel];
     }
 
     /**
@@ -39,7 +47,7 @@ class Otp extends Notification
      */
     public function __call(string $name, array $args)
     {
-        if (str_starts_with($name, 'to') and count($args) == 1 and is_object(current($args))) {
+        if (Str::of($name)->startsWith('to') and count($args) == 1 and is_object(current($args))) {
             return $this->content;
         }
     }

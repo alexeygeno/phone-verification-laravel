@@ -86,6 +86,7 @@ composer require jenssegers/mongodb laravel-notification-channels/twilio
         'driver' => 'mongodb', 
     ],
     'sender' => [
+        'driver' => 'twilio',
         'channel' => \NotificationChannels\Twilio\TwilioChannel::class
     ]
 ]
@@ -95,7 +96,7 @@ If the available options are not sufficient, you can redefine the service provid
 ```php
 [
     'storage' => [
-        'driver' => 'redis', // redis || mongodb
+        'driver' => 'redis', // 'redis' || 'mongodb'
         'redis' => [
             'connection' => 'default',
             // the key settings - normally you don't need to change them
@@ -115,12 +116,8 @@ If the available options are not sufficient, you can redefine the service provid
         ],
     ],
     'sender' => [
-        /**
-         * \Illuminate\Notifications\Channels\VonageSmsChannel::class || \NotificationChannels\Twilio\TwilioChannel::class || \NotificationChannels\Messagebird\MessagebirdChannel::class
-         *
-         * and many more https://github.com/laravel-notification-channels
-         */
-        'channel' => \Illuminate\Notifications\Channels\VonageSmsChannel::class,
+        'driver' => 'vonage', // 'vonage' || 'twilio' || 'messagebird' and many more https://github.com/laravel-notification-channels
+        'channel' => \Illuminate\Notifications\Channels\VonageSmsChannel::class, // \Illuminate\Notifications\Channels\VonageSmsChannel::class || \NotificationChannels\Twilio\TwilioChannel::class || \NotificationChannels\Messagebird\MessagebirdChannel::class and many more https://github.com/laravel-notification-channels
         'to_log' => false, // if enabled: instead of sending a real notification, debug it to the app log
     ],
     'routes' => true, // managing the availability of the package routes without redefining the service provider

@@ -10,7 +10,7 @@ class FacadeTest extends FeatureTestCase
     use PHPMock;
 
     /**
-     * Test verification process using the facade
+     * Test verification process using the facade.
      *
      * @runInSeparateProcess
      *

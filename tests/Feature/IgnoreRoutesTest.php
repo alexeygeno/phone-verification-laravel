@@ -14,7 +14,7 @@ class IgnoreRoutesTest extends FeatureTestCase
     }
 
     /**
-     * If the route phone-verification/initiate is not available
+     * If the 'phone-verification/initiate' route is not available.
      *
      * @return void
      */
@@ -25,7 +25,7 @@ class IgnoreRoutesTest extends FeatureTestCase
     }
 
     /**
-     * If the route phone-verification/complete is not available
+     * If the 'phone-verification/complete' route is not available.
      *
      * @return void
      */

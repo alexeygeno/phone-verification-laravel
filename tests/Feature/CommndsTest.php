@@ -9,7 +9,7 @@ class CommandsTest extends FeatureTestCase
     use PHPMock;
 
     /**
-     * Test verification process using artisan commands
+     * Test verification process using artisan commands.
      *
      * @runInSeparateProcess
      *
