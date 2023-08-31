@@ -1,6 +1,6 @@
 <?php
 
-namespace AlexGeno\PhoneVerificationLaravel\Tests\Unit;
+namespace AlexGeno\PhoneVerificationLaravel\Tests\Feature;
 
 use AlexGeno\PhoneVerification\Sender\I as ISender;
 use AlexGeno\PhoneVerificationLaravel\Notifications\Otp;
@@ -8,8 +8,14 @@ use Illuminate\Notifications\AnonymousNotifiable;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
 
-class SendersTest extends UnitTestCase
+class SendersTest extends FeatureTestCase
 {
+    protected function getEnvironmentSetUp($app)
+    {
+        parent::getEnvironmentSetUp($app);
+        config(['phone-verification.sender.to_log' => false]);
+    }
+
     /**
      * Senders data provider.
      *

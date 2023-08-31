@@ -2,17 +2,8 @@
 
 namespace AlexGeno\PhoneVerificationLaravel\Tests\Unit;
 
-use AlexGeno\PhoneVerificationLaravel\Tests\TestCase;
+use PHPUnit\Framework\TestCase;
 
 abstract class UnitTestCase extends TestCase
 {
-    /**
-     * {@inheritdoc}
-     */
-    protected function getEnvironmentSetUp($app)
-    {
-        parent::getEnvironmentSetUp($app);
-        // Tests will be failed if notifications are not mocked
-        config(['phone-verification.sender.to_log' => false]);
-    }
 }

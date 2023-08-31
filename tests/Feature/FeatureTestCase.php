@@ -2,12 +2,15 @@
 
 namespace AlexGeno\PhoneVerificationLaravel\Tests\Feature;
 
-use AlexGeno\PhoneVerificationLaravel\Tests\TestCase;
+use AlexGeno\PhoneVerificationLaravel\PhoneVerificationServiceProvider;
 use Illuminate\Support\Facades\Redis;
 use Lunaweb\RedisMock\Providers\RedisMockServiceProvider;
+use Orchestra\Testbench\TestCase;
 
 abstract class FeatureTestCase extends TestCase
 {
+    protected string $serviceProvider = PhoneVerificationServiceProvider::class;
+
     /**
      * {@inheritdoc}
      */
@@ -33,6 +36,7 @@ abstract class FeatureTestCase extends TestCase
     protected function getPackageProviders($app)
     {
         return array_merge(parent::getPackageProviders($app), [
+            $this->serviceProvider,
             RedisMockServiceProvider::class,
         ]);
     }
