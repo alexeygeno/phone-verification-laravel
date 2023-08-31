@@ -28,7 +28,9 @@ return [
     ],
     'routes' => true, // managing the availability of the package routes without redefining the service provider
     'manager' => [
-        'otp' => ['length' => env('PHONE_VERIFICATION_OTP_LENGTH', 4)],
+        'otp' => [
+            'length' => env('PHONE_VERIFICATION_OTP_LENGTH', 4), // 1000..9999
+        ],
         'rate_limits' => [
             'initiate' => [ // for every 'to' no more than 10 initiations over 24 hours
                 'period_secs' => env('PHONE_VERIFICATION_RATE_LIMIT_INITIATE_PERIOD_SECS', 86400),

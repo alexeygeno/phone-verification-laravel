@@ -13,7 +13,7 @@ Signing in or signing up on a modern website or mobile app typically follows the
 
 This library is built on top of [ alexeygeno/phone-verification-php ](https://github.com/alexeygeno/phone-verification-php) and allows to set this up
 
-Supported features: 
+## Supported features 
  - [Easy](#different-storages-and-notification-channels) switching between different storages and notification channels
  - Configurable length and expiration time for [OTP](https://en.wikipedia.org/wiki/One-time_password) 
  - Configurable rate limits
@@ -23,12 +23,11 @@ Supported features:
  - Out-of-the-box routes for quick start
 
 ## Requirements
-[Laravel 9.x](https://laravel.com/docs/9.x)
-
-One of Laravel notification channels: [vonage](https://github.com/laravel/vonage-notification-channel), [twilio](https://github.com/laravel-notification-channels/twilio), [messagebird](https://github.com/laravel-notification-channels/messagebird)  and [many more ](https://github.com/laravel-notification-channels?q=&type=all&language=php&sort=)
-
-One of the supported storages: [predis/predis](https://github.com/predis/predis), [jenssegers/laravel-mongodb](https://github.com/jenssegers/laravel-mongodb)
+- [Laravel 9.x](https://laravel.com/docs/9.x)
+- Any of Laravel notification channels: [vonage](https://github.com/laravel/vonage-notification-channel), [twilio](https://github.com/laravel-notification-channels/twilio), [messagebird](https://github.com/laravel-notification-channels/messagebird)  and [many more ](https://github.com/laravel-notification-channels?q=&type=all&language=php&sort=)
+- Any of supported storages: [predis/predis](https://github.com/predis/predis), [jenssegers/laravel-mongodb](https://github.com/jenssegers/laravel-mongodb)
 ## Installation
+
 ```shell
 composer require alexgeno/phone-verification-laravel predis/predis laravel/vonage-notification-channel
 ```
@@ -65,16 +64,16 @@ php artisan phone-verification:complete --to=+15417543010 --otp=1234
 #### Routes
 ```shell
 curl -d "to=+15417543010" localhost/phone-verification/initiate
-#{"ok":true,"message":"Sms has been sent. Check your Phone!"}
+{"ok":true,"message":"Sms has been sent. Check your Phone!"}
 ```
 ```shell
 curl -d "to=+15417543010&otp=1234" localhost/phone-verification/complete
-#{"ok":true,"message":"The verification is done!"}
+{"ok":true,"message":"The verification is done!"}
 ```
 **Note**: The package routes are available by default. To make them unavailable without redefining the service provider, change the bool key **phone-verification.sender.to_log** in the configuration
 
 ## Different storages and notification channels
-To switch between [available](#requirements) storages and notifications channels, install the respective package and update the configuration
+To switch between [available](#requirements) storages and notifications channels, install a respective package and update the configuration
 
 For example, to use **Mongodb** as a storage and **Twilio** as a notification channel:
 ```shell
@@ -83,12 +82,15 @@ composer require jenssegers/mongodb laravel-notification-channels/twilio
 ```php
 [
     'storage' => [
-        'driver' => 'mongodb', 
+        'driver' => 'mongodb',
+        // ... 
     ],
     'sender' => [
         'driver' => 'twilio',
         'channel' => \NotificationChannels\Twilio\TwilioChannel::class
-    ]
+        // ... 
+    ],
+    // ... 
 ]
 ```
 If the available options are not sufficient, you can redefine the service provider and add a custom storage (implementing **\AlexGeno\PhoneVerification\Storage\I**) or/and a sender (implementing **\AlexGeno\PhoneVerification\Sender\I**)
@@ -122,7 +124,9 @@ If the available options are not sufficient, you can redefine the service provid
     ],
     'routes' => true, // managing the availability of the package routes without redefining the service provider
     'manager' => [
-        'otp' => ['length' => env('PHONE_VERIFICATION_OTP_LENGTH', 4)],
+        'otp' => [
+            'length' => env('PHONE_VERIFICATION_OTP_LENGTH', 4), // 1000..9999
+        ],
         'rate_limits' => [
             'initiate' => [ // for every 'to' no more than 10 initiations over 24 hours
                 'period_secs' => env('PHONE_VERIFICATION_RATE_LIMIT_INITIATE_PERIOD_SECS', 86400),
