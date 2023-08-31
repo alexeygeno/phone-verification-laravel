@@ -87,7 +87,7 @@ composer require jenssegers/mongodb laravel-notification-channels/twilio
     ],
     'sender' => [
         'driver' => 'twilio',
-        'channel' => \NotificationChannels\Twilio\TwilioChannel::class
+        'channel' => \NotificationChannels\Twilio\TwilioChannel::class,
         // ... 
     ],
     // ... 
