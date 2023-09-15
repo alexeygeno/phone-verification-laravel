@@ -1,6 +1,6 @@
 {
     "name": "alexgeno/phone-verification-laravel",
-    "description":"A Laravel library to verify a phone via notification channels. Any notification channel can be used as a sender. Redis(predis) or MongoDb can be used a storage.",
+    "description":"A Laravel library to verify a phone via notification channels. Any notification channel can be used as a sender. Redis or MongoDb can be used a storage.",
     "type": "library",
     "keywords":["phone", "verification", "verify", "sms", "2fa", "2factor","authentication", "signin",
         "signup", "redis", "mongo", "mongodb", "verify-by-phone", "otp", "notification", "notification-channel",

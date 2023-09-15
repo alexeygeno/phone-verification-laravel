@@ -72,28 +72,6 @@ curl -d "to=+15417543010&otp=1234" localhost/phone-verification/complete
 ```
 **Note**: The package routes are available by default. To make them unavailable without redefining the service provider, change the bool key **phone-verification.sender.to_log** in the configuration
 
-## Different storages and notification channels
-To switch between [available](#requirements) storages and notifications channels, install a respective package and update the configuration
-
-For example, to use **Mongodb** as a storage and **Twilio** as a notification channel:
-```shell
-composer require jenssegers/mongodb laravel-notification-channels/twilio
-```
-```php
-[
-    'storage' => [
-        'driver' => 'mongodb',
-        // ... 
-    ],
-    'sender' => [
-        'driver' => 'twilio',
-        'channel' => \NotificationChannels\Twilio\TwilioChannel::class,
-        // ... 
-    ],
-    // ... 
-]
-```
-If the available options are not sufficient, you can redefine the service provider and add a custom storage (implementing **\AlexGeno\PhoneVerification\Storage\I**) or/and a sender (implementing **\AlexGeno\PhoneVerification\Sender\I**)
 ## Configuration
 ```php
 [
@@ -140,6 +118,29 @@ If the available options are not sufficient, you can redefine the service provid
     ],
 ];
 ```
+
+## Different storages and notification channels
+To switch between [available](#requirements) storages and notifications channels, install the respective package and update the configuration
+
+For example, to use **Mongodb** as a storage and **Twilio** as a notification channel:
+```shell
+composer require jenssegers/mongodb laravel-notification-channels/twilio
+```
+```php
+[
+    'storage' => [
+        'driver' => 'mongodb',
+        // ... 
+    ],
+    'sender' => [
+        'driver' => 'twilio',
+        'channel' => \NotificationChannels\Twilio\TwilioChannel::class,
+        // ... 
+    ],
+    // ... 
+]
+```
+If the available options are not sufficient, you can redefine the service provider and add a custom storage (implementing **\AlexGeno\PhoneVerification\Storage\I**) or/and a sender (implementing **\AlexGeno\PhoneVerification\Sender\I**)
 
 ## Publishing
 #### Config
