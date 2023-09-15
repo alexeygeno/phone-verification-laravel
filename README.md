@@ -120,9 +120,7 @@ curl -d "to=+15417543010&otp=1234" localhost/phone-verification/complete
 ```
 
 ## Different storages and notification channels
-To switch between [available](#requirements) storages and notifications channels, install the respective package and update the configuration
-
-For example, to use **Mongodb** as a storage and **Twilio** as a notification channel:
+To switch between [available](#requirements) storages and notifications channels, install the respective package and update the configuration. For example, to use **Mongodb** as a storage and **Twilio** as a notification channel:
 ```shell
 composer require jenssegers/mongodb laravel-notification-channels/twilio
 ```
