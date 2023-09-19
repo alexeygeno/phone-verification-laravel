@@ -12,7 +12,7 @@ class Complete extends Command
      *
      * @var string
      */
-    protected $signature = 'phone-verification:complete {--to= : A recipient ID such as phone number, email, etc} {--otp= : A one-time password}';
+    protected $signature = 'phone-verification:complete {--to= : A recipient phone number} {--otp= : A one-time password}';
 
     /**
      * The console command description.

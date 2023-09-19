@@ -12,14 +12,14 @@ class Initiate extends Command
      *
      * @var string
      */
-    protected $signature = 'phone-verification:initiate {--to= : A recipient ID such as phone number, email, etc}';
+    protected $signature = 'phone-verification:initiate {--to= : A recipient phone number}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Sends a notification with an otp to a recipient';
+    protected $description = 'Sends a notification with A one-time password to a recipient';
 
     /**
      * Execute the console command.
