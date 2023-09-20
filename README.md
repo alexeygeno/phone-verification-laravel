@@ -24,8 +24,8 @@ This library is built on top of [ alexeygeno/phone-verification-php ](https://gi
 
 ## Requirements
 - [Laravel 9.x](https://laravel.com/docs/9.x)
-- Any of Laravel notification channels: [vonage](https://github.com/laravel/vonage-notification-channel), [twilio](https://github.com/laravel-notification-channels/twilio), [messagebird](https://github.com/laravel-notification-channels/messagebird)  and [many more ](https://github.com/laravel-notification-channels?q=&type=all&language=php&sort=)
-- Any of supported storages: [predis/predis](https://github.com/predis/predis), [jenssegers/laravel-mongodb](https://github.com/jenssegers/laravel-mongodb)
+- Any of the available [Laravel Notification Channels](https://laravel-notification-channels.com/): [laravel/vonage-notification-channel](https://github.com/laravel/vonage-notification-channel), [laravel-notification-channels/twilio](https://github.com/laravel-notification-channels/twilio), [laravel-notification-channels/messagebird](https://github.com/laravel-notification-channels/messagebird)  and [many more ](https://github.com/laravel-notification-channels?q=&type=all&language=php&sort=)
+- Any of the supported storages: [predis/predis](https://github.com/predis/predis), [jenssegers/laravel-mongodb](https://github.com/jenssegers/laravel-mongodb)
 ## Installation
 
 ```shell
