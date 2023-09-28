@@ -42,39 +42,38 @@ class PhoneVerificationServiceProvider extends ServiceProvider
     }
 
     /**
-     * Return registration info for storages.
+     * Return the Redis storage instance.
      *
-     * @return array<mixed>[
-     *           'redis' => [\AlexGeno\PhoneVerification\Storage\Redis::class, \Closure],
-     *           'mongodb' => [\AlexGeno\PhoneVerification\Storage\MongoDb::class, \Closure]
-     * ]
+     * @param  array<mixed>  $config ['settings' => [...], 'connection' => string]
+     * @return \AlexGeno\PhoneVerification\Storage\Redis
      */
-    protected function storages()
+    protected function redisStorage(array $config)
     {
-        return [
-            'redis' => [
-                \AlexGeno\PhoneVerification\Storage\Redis::class, // storage class name
-                fn (array $config): array => [Redis::connection($config['connection'])->client(), $config['settings']], // params for the constructor
-            ],
-            'mongodb' => [
-                \AlexGeno\PhoneVerification\Storage\MongoDb::class, // storage class name
-                function (array $config): array {
-                    /**
-                     * @var \Jenssegers\Mongodb\Connection
-                     */
-                    $connection = DB::connection($config['connection']);
-                    $config['settings']['db'] = $connection->getDatabaseName();
+        $connection = Redis::connection($config['connection']);
 
-                    return [$connection->getMongoClient(), $config['settings']];
-                }, // params for the constructor
-            ],
-        ];
+        return new \AlexGeno\PhoneVerification\Storage\Redis($connection->client(), $config['settings']);
     }
 
     /**
-     * Register a storage using the config setting.
+     * Return the Mongodb storage instance.
      *
-     * @see storages()
+     * @param  array<mixed>  $config ['settings' => [...], 'connection' => string]
+     * @return \AlexGeno\PhoneVerification\Storage\MongoDb
+     */
+    protected function mongodbStorage(array $config)
+    {
+        /**
+         * @var \Jenssegers\Mongodb\Connection
+         */
+        $connection = DB::connection($config['connection']);
+        $config['settings']['db'] = $connection->getDatabaseName();
+
+        return new \AlexGeno\PhoneVerification\Storage\MongoDb($connection->getMongoClient(), $config);
+    }
+
+    /**
+     * Register the Storage service.
+     *
      * @see \AlexGeno\PhoneVerification\Storage\I
      *
      * @return void
@@ -84,17 +83,17 @@ class PhoneVerificationServiceProvider extends ServiceProvider
         $this->app->bind(IStorage::class, function ($container) {
             $config = config('phone-verification.storage');
             $driver = $config['driver'];
-            $storage = $this->storages()[$driver];
+            $method = $config['driver'].'Storage';
+            if (! method_exists($this, $method)) {
+                throw new Exception("Not supported storage driver: $driver");
+            }
 
-            $className = current($storage);
-            $params = next($storage)($config[$driver]);
-
-            return new $className(...$params);
+            return $this->$method($config[$driver]);
         });
     }
 
     /**
-     * Register Sender using config settings.
+     * Register the Sender service.
      *
      * @see \AlexGeno\PhoneVerificationLaravel\Sender
      * @see \AlexGeno\PhoneVerification\Sender\I
@@ -111,7 +110,7 @@ class PhoneVerificationServiceProvider extends ServiceProvider
     }
 
     /**
-     * Register Otp using config settings.
+     * Register the Otp(Notification) service.
      *
      * @return void
      */
@@ -121,7 +120,7 @@ class PhoneVerificationServiceProvider extends ServiceProvider
     }
 
     /**
-     * Build a config for Manager.
+     * Return the configuration for the Manager service.
      *
      * @see \AlexGeno\PhoneVerification\Manager
      *
@@ -142,7 +141,7 @@ class PhoneVerificationServiceProvider extends ServiceProvider
     }
 
     /**
-     * Register Manager.
+     * Register the Manager service.
      *
      * @see \AlexGeno\PhoneVerification\Manager
      * @see \AlexGeno\PhoneVerification\Manager\Initiator
@@ -164,7 +163,7 @@ class PhoneVerificationServiceProvider extends ServiceProvider
     }
 
     /**
-     * Register the package's config.
+     * Register the package's configuration.
      *
      * @return void
      */
@@ -174,7 +173,7 @@ class PhoneVerificationServiceProvider extends ServiceProvider
     }
 
     /**
-     * Bootstrap the package's services.
+     * Boot the package's services.
      *
      * @return void
      */

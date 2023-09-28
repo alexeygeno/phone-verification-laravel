@@ -30,7 +30,7 @@ class CustomStorageTest extends FeatureTestCase
             ]
         );
 
-        $fooSender = $this->app->make(\AlexGeno\PhoneVerification\Storage\I::class);
-        $this->assertInstanceOf(Foo::class, $fooSender);
+        $fooStorage = $this->app->make(\AlexGeno\PhoneVerification\Storage\I::class);
+        $this->assertInstanceOf(Foo::class, $fooStorage);
     }
 }
