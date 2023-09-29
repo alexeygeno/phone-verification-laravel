@@ -14,10 +14,10 @@ abstract class FeatureTestCase extends TestCase
     /**
      * {@inheritdoc}
      */
-    protected function setUp(): void
+    protected function tearDown(): void
     {
-        parent::setUp();
         Redis::client()->flushdb();
+        parent::tearDown();
     }
 
     /**

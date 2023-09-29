@@ -44,7 +44,7 @@ class PhoneVerificationServiceProvider extends ServiceProvider
     /**
      * Return the Redis storage instance.
      *
-     * @param  array<mixed>  $config ['settings' => [...], 'connection' => string]
+     * @param  array<mixed> $config ['settings' => [...], 'connection' => string]
      * @return \AlexGeno\PhoneVerification\Storage\Redis
      */
     protected function redisStorage(array $config)
@@ -57,7 +57,7 @@ class PhoneVerificationServiceProvider extends ServiceProvider
     /**
      * Return the Mongodb storage instance.
      *
-     * @param  array<mixed>  $config ['settings' => [...], 'connection' => string]
+     * @param  array<mixed> $config ['settings' => [...], 'connection' => string]
      * @return \AlexGeno\PhoneVerification\Storage\MongoDb
      */
     protected function mongodbStorage(array $config)
@@ -83,7 +83,7 @@ class PhoneVerificationServiceProvider extends ServiceProvider
         $this->app->bind(IStorage::class, function ($container) {
             $config = config('phone-verification.storage');
             $driver = $config['driver'];
-            $method = $config['driver'].'Storage';
+            $method = $driver.'Storage';
             if (! method_exists($this, $method)) {
                 throw new Exception("Not supported storage driver: $driver");
             }
