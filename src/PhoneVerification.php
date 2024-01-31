@@ -7,7 +7,7 @@ class PhoneVerification
     /**
      * Initiate verification process.
      *
-     * @return  \AlexGeno\PhoneVerification\Manager\Initiator
+     * @return \AlexGeno\PhoneVerification\Manager\Initiator
      */
     public function initiate(string $to)
     {

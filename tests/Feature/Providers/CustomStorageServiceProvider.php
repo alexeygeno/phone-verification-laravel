@@ -10,7 +10,7 @@ class CustomStorageServiceProvider extends PhoneVerificationServiceProvider
     /**
      * Return the Foo storage instance.
      *
-     * @param  array<mixed>  $settings ['settings' => [...], 'connection' => string]
+     * @param  array<mixed>  $settings  ['settings' => [...], 'connection' => string]
      * @return Foo
      */
     protected function fooStorage(array $settings)

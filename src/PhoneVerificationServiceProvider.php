@@ -45,7 +45,7 @@ class PhoneVerificationServiceProvider extends ServiceProvider
     /**
      * Return the Redis storage instance.
      *
-     * @param  array<mixed>  $config ['settings' => [...], 'connection' => string]
+     * @param  array<mixed>  $config  ['settings' => [...], 'connection' => string]
      */
     protected function redisStorage(array $config): Redis
     {
@@ -57,7 +57,7 @@ class PhoneVerificationServiceProvider extends ServiceProvider
     /**
      * Return the Mongodb storage instance.
      *
-     * @param  array<mixed>  $config ['settings' => [...], 'connection' => string]
+     * @param  array<mixed>  $config  ['settings' => [...], 'connection' => string]
      */
     protected function mongodbStorage(array $config): MongoDb
     {
