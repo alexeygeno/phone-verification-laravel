@@ -2,6 +2,8 @@
 
 namespace AlexGeno\PhoneVerificationLaravel\Tests\Feature;
 
+use Illuminate\Http\Response;
+
 class IgnoreRoutesTest extends FeatureTestCase
 {
     /**
@@ -21,7 +23,7 @@ class IgnoreRoutesTest extends FeatureTestCase
     public function test_initiation_not_available()
     {
         $response = $this->postJson('/phone-verification/initiate', ['to' => '+15417543010']);
-        $response->assertStatus(404);
+        $response->assertStatus(Response::HTTP_NOT_FOUND);
     }
 
     /**
@@ -32,6 +34,6 @@ class IgnoreRoutesTest extends FeatureTestCase
     public function test_completion_not_available()
     {
         $response = $this->postJson('/phone-verification/complete', ['to' => '+15417543010', 'otp' => 1234]);
-        $response->assertStatus(404);
+        $response->assertStatus(Response::HTTP_NOT_FOUND);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace AlexGeno\PhoneVerificationLaravel\Tests\Feature;
 
+use Illuminate\Http\Response;
 use phpmock\phpunit\PHPMock;
 
 class UseRoutesTest extends FeatureTestCase
@@ -19,7 +20,7 @@ class UseRoutesTest extends FeatureTestCase
     {
         $response = $this->postJson('/phone-verification/initiate', ['to' => '+15417543010']);
 
-        $response->assertStatus(200);
+        $response->assertStatus(Response::HTTP_OK);
 
         $response->assertJson(['ok' => true, 'message' => trans(self::LANG_MESSAGES.'initiation_success')]);
     }
@@ -34,7 +35,7 @@ class UseRoutesTest extends FeatureTestCase
         config(['phone-verification.manager.rate_limits.initiate' => ['count' => 0, 'period_secs' => 3600]]);
         $response = $this->postJson('/phone-verification/initiate', ['to' => '+15417543010']);
 
-        $response->assertStatus(406);
+        $response->assertStatus(Response::HTTP_NOT_ACCEPTABLE);
 
         $response->assertJson(['ok' => false, 'message' => trans(self::LANG_MESSAGES.'initiation_rate_limit', ['sms' => 0, 'hours' => 1])]);
     }
@@ -60,11 +61,11 @@ class UseRoutesTest extends FeatureTestCase
         $rand->expects($this->once())->willReturn($otp);
 
         $response = $this->postJson('/phone-verification/initiate', ['to' => $to]);
-        $response->assertStatus(200);
+        $response->assertStatus(Response::HTTP_OK);
         $response->assertJson(['ok' => true, 'message' => trans(self::LANG_MESSAGES.'initiation_success')]);
 
         $response = $this->postJson('/phone-verification/complete', ['to' => $to, 'otp' => $otp]);
-        $response->assertStatus(200);
+        $response->assertStatus(Response::HTTP_OK);
         $response->assertJson(['ok' => true, 'message' => trans(self::LANG_MESSAGES.'completion_success')]);
     }
 
@@ -78,7 +79,7 @@ class UseRoutesTest extends FeatureTestCase
         config(['phone-verification.manager.rate_limits.complete' => ['count' => 0, 'period_secs' => 60]]);
         $response = $this->postJson('/phone-verification/complete', ['to' => '+15417543010', 'otp' => 0]);
 
-        $response->assertStatus(406);
+        $response->assertStatus(Response::HTTP_NOT_ACCEPTABLE);
 
         $response->assertJson(['ok' => false, 'message' => trans(self::LANG_MESSAGES.'completion_rate_limit', ['times' => 0, 'minutes' => 1])]);
     }
@@ -92,13 +93,13 @@ class UseRoutesTest extends FeatureTestCase
     {
         $response = $this->postJson('/phone-verification/initiate', ['to' => '+15417543010']);
 
-        $response->assertStatus(200);
+        $response->assertStatus(Response::HTTP_OK);
 
         $response->assertJson(['ok' => true, 'message' => trans(self::LANG_MESSAGES.'initiation_success')]);
 
         $response = $this->postJson('/phone-verification/complete', ['to' => '+15417543010', 'otp' => 0]);
 
-        $response->assertStatus(406);
+        $response->assertStatus(Response::HTTP_NOT_ACCEPTABLE);
 
         $response->assertJson(['ok' => false, 'message' => trans(self::LANG_MESSAGES.'incorrect')]);
     }
@@ -115,7 +116,7 @@ class UseRoutesTest extends FeatureTestCase
 
         $response = $this->postJson('/phone-verification/complete', ['to' => '+15417543010', 'otp' => 0]);
 
-        $response->assertStatus(406);
+        $response->assertStatus(Response::HTTP_NOT_ACCEPTABLE);
 
         $response->assertJson(['ok' => false, 'message' => trans(self::LANG_MESSAGES.'expired', ['minutes' => $expirationPeriodSecs / 60])]);
     }

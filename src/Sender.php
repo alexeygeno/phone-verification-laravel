@@ -4,24 +4,21 @@ namespace AlexGeno\PhoneVerificationLaravel;
 
 use AlexGeno\PhoneVerification\Sender\I;
 use AlexGeno\PhoneVerificationLaravel\Notifications\Otp;
-use Illuminate\Support\Facades\Notification;
+use Illuminate\Notifications\AnonymousNotifiable;
+use Psr\Log\LoggerInterface;
 
 class Sender implements I
 {
-    protected Otp $otp;
-
-    protected string $driver;
-
-    protected bool $toLog;
-
     /**
      * Constructor.
      */
-    public function __construct(Otp $otp, string $driver, bool $toLog)
-    {
-        $this->otp = $otp;
-        $this->driver = $driver;
-        $this->toLog = $toLog;
+    public function __construct(
+        protected Otp $otp,
+        protected AnonymousNotifiable $notifiable,
+        protected LoggerInterface $logger,
+        protected string $driver,
+        protected bool $toLog
+    ) {
     }
 
     /**
@@ -32,9 +29,9 @@ class Sender implements I
     public function invoke(string $to, string $text)
     {
         if ($this->toLog) {
-            \Illuminate\Support\Facades\Log::info("Pretended notification sending to {$this->driver}:{$to} with message: {$text}");
+            $this->logger->info("Pretended notification sending to {$this->driver}:{$to} with message: {$text}");
         } else {
-            Notification::route($this->driver, $to)->notify($this->otp->content($text));
+            $this->notifiable->route($this->driver, $to)->notify($this->otp->content($text));
         }
     }
 }

@@ -34,8 +34,9 @@
         }
     },
     "require": {
-        "php":"^8.0",
-        "alexgeno/phone-verification": "^1.0"
+        "php": "^8.0",
+        "alexgeno/phone-verification": "^1.0",
+        "laravel/framework": "^9.0"
     },
     "suggest": {
         "predis/predis": "required to use Redis as a storage",

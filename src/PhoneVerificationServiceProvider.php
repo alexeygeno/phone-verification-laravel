@@ -7,11 +7,12 @@ use AlexGeno\PhoneVerification\Manager\Completer;
 use AlexGeno\PhoneVerification\Manager\Initiator;
 use AlexGeno\PhoneVerification\Sender\I as ISender;
 use AlexGeno\PhoneVerification\Storage\I as IStorage;
+use AlexGeno\PhoneVerification\Storage\MongoDb;
+use AlexGeno\PhoneVerification\Storage\Redis;
 use AlexGeno\PhoneVerificationLaravel\Commands\Complete;
 use AlexGeno\PhoneVerificationLaravel\Commands\Initiate;
 use AlexGeno\PhoneVerificationLaravel\Notifications\Otp;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Redis;
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
 
 class PhoneVerificationServiceProvider extends ServiceProvider
@@ -21,12 +22,12 @@ class PhoneVerificationServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->registerConfig();
         $this->registerStorage();
         $this->registerSender();
         $this->registerOtp();
         $this->registerManager();
         $this->registerPhoneVerification();
+        $this->registerConfig();
     }
 
     /**
@@ -36,7 +37,7 @@ class PhoneVerificationServiceProvider extends ServiceProvider
      */
     protected function registerPhoneVerification()
     {
-        $this->app->singleton(PhoneVerification::class, function ($container) {
+        $this->app->singleton(PhoneVerification::class, function (Application $container) {
             return new PhoneVerification();
         });
     }
@@ -45,30 +46,28 @@ class PhoneVerificationServiceProvider extends ServiceProvider
      * Return the Redis storage instance.
      *
      * @param  array<mixed>  $config ['settings' => [...], 'connection' => string]
-     * @return \AlexGeno\PhoneVerification\Storage\Redis
      */
-    protected function redisStorage(array $config)
+    protected function redisStorage(array $config): Redis
     {
-        $connection = Redis::connection($config['connection']);
+        $connection = $this->app->make('redis')->connection($config['connection']);
 
-        return new \AlexGeno\PhoneVerification\Storage\Redis($connection->client(), $config['settings']);
+        return new Redis($connection->client(), $config['settings']);
     }
 
     /**
      * Return the Mongodb storage instance.
      *
      * @param  array<mixed>  $config ['settings' => [...], 'connection' => string]
-     * @return \AlexGeno\PhoneVerification\Storage\MongoDb
      */
-    protected function mongodbStorage(array $config)
+    protected function mongodbStorage(array $config): MongoDb
     {
         /**
          * @var \Jenssegers\Mongodb\Connection
          */
-        $connection = DB::connection($config['connection']);
+        $connection = $this->app->make('db')->connection($config['connection']);
         $config['settings']['db'] = $connection->getDatabaseName();
 
-        return new \AlexGeno\PhoneVerification\Storage\MongoDb($connection->getMongoClient(), $config);
+        return new MongoDb($connection->getMongoClient(), $config);
     }
 
     /**
@@ -80,7 +79,7 @@ class PhoneVerificationServiceProvider extends ServiceProvider
      */
     protected function registerStorage()
     {
-        $this->app->bind(IStorage::class, function ($container) {
+        $this->app->bind(IStorage::class, function (Application $container) {
             $config = config('phone-verification.storage');
             $driver = $config['driver'];
             $method = $driver.'Storage';
@@ -104,7 +103,7 @@ class PhoneVerificationServiceProvider extends ServiceProvider
     {
         $this->app->when(Sender::class)->needs('$driver')->giveConfig('phone-verification.sender.driver');
         $this->app->when(Sender::class)->needs('$toLog')->giveConfig('phone-verification.sender.to_log');
-        $this->app->bind(ISender::class, function ($container) {
+        $this->app->bind(ISender::class, function (Application $container) {
             return $container->make(Sender::class);
         });
     }
@@ -126,7 +125,7 @@ class PhoneVerificationServiceProvider extends ServiceProvider
      *
      * @return array<mixed>
      */
-    protected function managerConfig()
+    protected function managerConfig(): array
     {
         $config = config('phone-verification.manager');
         // load translated messages
@@ -152,12 +151,12 @@ class PhoneVerificationServiceProvider extends ServiceProvider
     protected function registerManager()
     {
         // a sender and a storage for initiation process
-        $this->app->bind(Initiator::class, function ($container) {
+        $this->app->bind(Initiator::class, function (Application $container) {
             return (new Manager($container->make(IStorage::class), $this->managerConfig()))
                 ->sender($container->make(ISender::class));
         });
         // only a storage for completion process
-        $this->app->bind(Completer::class, function ($container) {
+        $this->app->bind(Completer::class, function (Application $container) {
             return new Manager($container->make(IStorage::class), $this->managerConfig());
         });
     }

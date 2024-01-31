@@ -9,11 +9,9 @@ class Otp extends Notification
 {
     protected string $content;
 
-    protected string $channel;
-
-    public function __construct(string $channel)
-    {
-        $this->channel = $channel;
+    public function __construct(
+        protected string $channel
+    ) {
     }
 
     /**
